@@ -21,6 +21,7 @@
 <p align="center">
   <img src="docs/Screenshot_1.png" alt="Landing page" width="80%">
   <img src="docs/Screenshot_2.png" alt="Categorias e footer" width="80%">
+  <img src="docs/Screenshot_3.png" alt="Feed e descobrir pessoas" width="80%">
 </p>
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=FF6B00&height=2&width=100%25" width="100%"/>
