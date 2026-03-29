@@ -3,9 +3,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-00DC82?style=for-the-badge&labelColor=0a1a12" alt="Frontend">
-  <img src="https://img.shields.io/badge/backend-FastAPI-FF6B00?style=for-the-badge&labelColor=0a1a12" alt="Backend">
-  <img src="https://img.shields.io/badge/banco-MySQL-00DC82?style=for-the-badge&labelColor=0a1a12" alt="MySQL">
+  <img src="https://img.shields.io/badge/HTML%20%7C%20CSS%20%7C%20JS-00DC82?style=flat-square&logo=html5&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-FF6B00?style=flat-square&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-00DC82?style=flat-square&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Python-FF6B00?style=flat-square&logo=python&logoColor=white"/>
 </p>
 
 <p align="center">
@@ -13,7 +14,7 @@
   Cadastre o que voce sabe, encontre quem sabe o que voce quer aprender e troque conhecimento — sem custo, so troca.
 </p>
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
 
 ## Preview
 
@@ -22,7 +23,7 @@
   <img src="docs/Screenshot_2.png" alt="Categorias e footer" width="80%">
 </p>
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=FF6B00&height=2&width=100%25" width="100%"/>
 
 ## Modelagem do Banco
 
@@ -30,7 +31,7 @@
   <img src="docs/db.png" alt="Diagrama ER" width="70%">
 </p>
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
 
 ## Funcionalidades
 
@@ -48,7 +49,7 @@
 🟠 Filtros de pesquisa por categoria (Sprint 2)
 ```
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=FF6B00&height=2&width=100%25" width="100%"/>
 
 ## Estrutura
 
@@ -93,7 +94,7 @@ Desenrola/
     └── Screenshot_2.png
 ```
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
 
 ## Como rodar
 
