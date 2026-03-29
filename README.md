@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/assets/images/camaleon.png" alt="desenrola!" width="120">
+  <img src="frontend/assets/images/camaleon.png" alt="desenrola!" width="360">
 </p>
 
 <p align="center">
