@@ -1,9 +1,38 @@
+import os
 import random
+import uuid
+import ssl
+import urllib.request
 from app.core.database import SessionLocal
 from app.core.auth import hash_password
 from app.models.skill import Category, Skill, UserSkill
 from app.models.user import User
 from app.models.post import Post
+
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+def download_image(url, retries=3):
+    filename = str(uuid.uuid4()) + ".jpg"
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
+                with open(filepath, "wb") as f:
+                    f.write(resp.read())
+            print("  baixou: " + filename)
+            return filename
+        except Exception as e:
+            if attempt < retries - 1:
+                print("  tentativa " + str(attempt + 1) + " falhou, tentando de novo...")
+            else:
+                print("  falha ao baixar: " + str(e))
+    return None
 
 db = SessionLocal()
 
@@ -48,10 +77,17 @@ fake_users = [
 all_skills = db.query(Skill).all()
 hashed = hash_password("123456")
 
-for u in fake_users:
+print("Baixando avatares...")
+for i, u in enumerate(fake_users):
     existing = db.query(User).filter(User.email == u["email"]).first()
     if existing:
+        if not existing.avatar:
+            avatar = download_image("https://i.pravatar.cc/200?img=" + str(i + 1))
+            if avatar:
+                existing.avatar = avatar
         continue
+
+    avatar = download_image("https://i.pravatar.cc/200?img=" + str(i + 1))
 
     user = User(
         name=u["name"],
@@ -60,6 +96,7 @@ for u in fake_users:
         cpf=u["cpf"],
         phone=u["phone"],
         birth_date=u["birth_date"],
+        avatar=avatar,
     )
     db.add(user)
     db.flush()
@@ -76,28 +113,40 @@ for u in fake_users:
 db.commit()
 
 posts_data = [
-    {"email": "lucas@email.com", "content": "Alguem aqui manja de React? To tentando migrar um projeto de jQuery e ta sendo uma aventura"},
-    {"email": "ana@email.com", "content": "Acabei de terminar meu primeiro bolo decorado! Confeitaria e terapia demais"},
-    {"email": "rafael@email.com", "content": "Dica pra quem ta comecando com Python: foca em entender listas e dicionarios antes de partir pra frameworks"},
-    {"email": "mariana@email.com", "content": "Alguem quer praticar espanhol comigo? To no nivel intermediario e preciso de conversacao"},
-    {"email": "pedro@email.com", "content": "Montei um mini estudio de fotografia em casa gastando menos de 200 reais. Se alguem quiser as dicas, chama!"},
-    {"email": "julia@email.com", "content": "Primeira vez tocando piano em publico hoje e nao travei! Valeu a pena cada hora de pratica"},
-    {"email": "gabriel@email.com", "content": "Quem mais acha que Figma revolucionou o design? Antes era Photoshop pra tudo"},
-    {"email": "camila@email.com", "content": "Terminei um curso de SEO e ja to vendo resultado no meu blog. Organico > pago"},
-    {"email": "bruno@email.com", "content": "To aprendendo japones por conta propria. Hiragana ja foi, agora vem o katakana"},
-    {"email": "fernanda@email.com", "content": "Dica de investimento pra iniciante: comeca pelo Tesouro Direto, nao vai direto pra day trade"},
-    {"email": "lucas@email.com", "content": "Quem quiser trocar uma ideia sobre Node.js, to disponivel! Bora montar um grupo de estudos"},
-    {"email": "ana@email.com", "content": "Pessoal, vale muito a pena aprender Libras. Alem de ser lindo, abre um mundo novo de comunicacao"},
-    {"email": "rafael@email.com", "content": "Fiz meu primeiro churrasco sozinho nesse fds. A picanha ficou no ponto, mas a farofa... vamos ignorar"},
-    {"email": "mariana@email.com", "content": "UI/UX nao e so deixar bonito, e sobre resolver problemas. Mudei minha visao depois de estudar design thinking"},
-    {"email": "pedro@email.com", "content": "Lightroom mobile e subestimado demais. Da pra editar foto profissional so no celular"},
+    {"email": "lucas@email.com", "content": "Alguem aqui manja de React? To tentando migrar um projeto de jQuery e ta sendo uma aventura", "image": "https://picsum.photos/seed/code1/600/400"},
+    {"email": "ana@email.com", "content": "Acabei de terminar meu primeiro bolo decorado! Confeitaria e terapia demais", "image": "https://picsum.photos/seed/cake1/600/400"},
+    {"email": "rafael@email.com", "content": "Dica pra quem ta comecando com Python: foca em entender listas e dicionarios antes de partir pra frameworks", "image": None},
+    {"email": "mariana@email.com", "content": "Alguem quer praticar espanhol comigo? To no nivel intermediario e preciso de conversacao", "image": None},
+    {"email": "pedro@email.com", "content": "Montei um mini estudio de fotografia em casa gastando menos de 200 reais. Se alguem quiser as dicas, chama!", "image": "https://picsum.photos/seed/photo1/600/400"},
+    {"email": "julia@email.com", "content": "Primeira vez tocando piano em publico hoje e nao travei! Valeu a pena cada hora de pratica", "image": "https://picsum.photos/seed/piano1/600/400"},
+    {"email": "gabriel@email.com", "content": "Quem mais acha que Figma revolucionou o design? Antes era Photoshop pra tudo", "image": None},
+    {"email": "camila@email.com", "content": "Terminei um curso de SEO e ja to vendo resultado no meu blog. Organico > pago", "image": "https://picsum.photos/seed/seo1/600/400"},
+    {"email": "bruno@email.com", "content": "To aprendendo japones por conta propria. Hiragana ja foi, agora vem o katakana", "image": "https://picsum.photos/seed/japan1/600/400"},
+    {"email": "fernanda@email.com", "content": "Dica de investimento pra iniciante: comeca pelo Tesouro Direto, nao vai direto pra day trade", "image": None},
+    {"email": "lucas@email.com", "content": "Quem quiser trocar uma ideia sobre Node.js, to disponivel! Bora montar um grupo de estudos", "image": None},
+    {"email": "ana@email.com", "content": "Pessoal, vale muito a pena aprender Libras. Alem de ser lindo, abre um mundo novo de comunicacao", "image": "https://picsum.photos/seed/libras1/600/400"},
+    {"email": "rafael@email.com", "content": "Fiz meu primeiro churrasco sozinho nesse fds. A picanha ficou no ponto, mas a farofa... vamos ignorar", "image": "https://picsum.photos/seed/churras1/600/400"},
+    {"email": "mariana@email.com", "content": "UI/UX nao e so deixar bonito, e sobre resolver problemas. Mudei minha visao depois de estudar design thinking", "image": None},
+    {"email": "pedro@email.com", "content": "Lightroom mobile e subestimado demais. Da pra editar foto profissional so no celular", "image": "https://picsum.photos/seed/light1/600/400"},
 ]
 
+existing_posts = db.query(Post).count()
+if existing_posts > 0:
+    db.query(Post).delete()
+    db.commit()
+
+print("Baixando imagens dos posts...")
 for p in posts_data:
     user = db.query(User).filter(User.email == p["email"]).first()
-    if user:
-        db.add(Post(user_id=user.id, content=p["content"]))
+    if not user:
+        continue
+
+    image_name = None
+    if p["image"]:
+        image_name = download_image(p["image"])
+
+    db.add(Post(user_id=user.id, content=p["content"], image=image_name))
 
 db.commit()
 db.close()
-print("Seed concluido! 10 usuarios e 15 posts criados.")
+print("Seed concluido! 10 usuarios com avatar e 15 posts com imagens.")
