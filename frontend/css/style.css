@@ -106,7 +106,7 @@ nav.scrolled {
 
 .btn-green {
   background: var(--green);
-  color: var(--dark);
+  color: #000;
 }
 
 .btn-green:hover {
