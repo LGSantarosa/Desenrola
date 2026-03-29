@@ -1,18 +1,54 @@
-# desenrola!
+<p align="center">
+  <img src="frontend/assets/images/logo.png" alt="desenrola!" width="320">
+</p>
 
-Plataforma de troca de habilidades entre pessoas. Cadastre o que voce sabe, encontre quem sabe o que voce quer aprender e troque conhecimento — sem custo, so troca.
+<p align="center">
+  <img src="https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-00DC82?style=for-the-badge&labelColor=0a1a12" alt="Frontend">
+  <img src="https://img.shields.io/badge/backend-FastAPI-FF6B00?style=for-the-badge&labelColor=0a1a12" alt="Backend">
+  <img src="https://img.shields.io/badge/banco-MySQL-00DC82?style=for-the-badge&labelColor=0a1a12" alt="MySQL">
+</p>
 
-## Stack
+<p align="center">
+  Plataforma de troca de habilidades entre pessoas.<br>
+  Cadastre o que voce sabe, encontre quem sabe o que voce quer aprender e troque conhecimento — sem custo, so troca.
+</p>
 
-**Frontend:** HTML, CSS, JavaScript
+---
 
-**Backend:** Python, FastAPI
+## Preview
 
-**Banco de dados:** MySQL
+<p align="center">
+  <img src="docs/Screenshot_1.png" alt="Landing page" width="80%">
+  <img src="docs/Screenshot_2.png" alt="Categorias e footer" width="80%">
+</p>
+
+---
 
 ## Modelagem do Banco
 
-![Diagrama ER](docs/db.png)
+<p align="center">
+  <img src="docs/db.png" alt="Diagrama ER" width="70%">
+</p>
+
+---
+
+## Funcionalidades
+
+```
+🟢 Cadastro e autenticacao de usuarios (Admin e Cliente)
+🟢 CRUD completo de usuario (criar, ver, editar, excluir)
+🟢 Autenticacao com senha criptografada (bcrypt) e JWT
+🟢 Validacao de formularios com RegEx e JavaScript
+🟢 Mascaras de input (CPF, telefone)
+🟢 Interface responsiva (desktop e mobile)
+🟢 Identificacao do usuario autenticado em todas as telas
+🟠 Sistema de matching entre usuarios (Sprint 2)
+🟠 Solicitacao de troca de habilidades (Sprint 2)
+🟠 Upload de avatar (Sprint 2)
+🟠 Filtros de pesquisa por categoria (Sprint 2)
+```
+
+---
 
 ## Estrutura
 
@@ -51,18 +87,13 @@ Desenrola/
 │       │   ├── auth.py
 │       │   └── user.py
 │       └── services/
-└── db.png
+└── docs/
+    ├── db.png
+    ├── Screenshot_1.png
+    └── Screenshot_2.png
 ```
 
-## Funcionalidades
-
-- Cadastro e autenticacao de usuarios (Admin e Cliente)
-- CRUD completo de usuario (criar, ver, editar, excluir)
-- Autenticacao com senha criptografada (bcrypt) e JWT
-- Validacao de formularios com RegEx e JavaScript
-- Mascaras de input (CPF, telefone)
-- Interface responsiva (desktop e mobile)
-- Identificacao do usuario autenticado em todas as telas
+---
 
 ## Como rodar
 
