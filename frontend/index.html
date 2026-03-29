@@ -9,432 +9,257 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              green: '#00DC82',
-              'green-hover': '#00f08e',
-              'green-border': 'rgba(0, 220, 130, 0.12)',
-              'green-border-hover': 'rgba(0, 220, 130, 0.30)',
-              'green-border-badge': 'rgba(0, 220, 130, 0.15)',
-              'green-border-section': 'rgba(0, 220, 130, 0.08)',
-              'green-bg-subtle': 'rgba(0, 220, 130, 0.10)',
-              orange: '#FF6B00',
-              dark: '#0a1a12',
-              'dark-2': '#0f2319',
-              'dark-3': '#142e20',
-            }
-          },
-          fontFamily: {
-            sora: ['Sora', 'sans-serif'],
-            inter: ['Inter', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
-
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="bg-brand-dark text-gray-100 font-inter overflow-x-hidden">
+<body>
 
-  <nav class="fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300">
-    <div class="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
+  <nav>
+    <div class="container nav-inner">
       <a href="#" class="nav-logo">
         <img src="assets/images/logo.png" alt="desenrola!">
       </a>
 
-      <div class="hidden md:flex items-center gap-8">
-        <a href="#como-funciona" class="text-sm font-medium text-brand-dark-3/60 text-gray-400 hover:text-white transition-colors">Como funciona</a>
-        <a href="#categorias" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Categorias</a>
-        <a href="#depoimentos" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Depoimentos</a>
-        <a href="#comecar" class="bg-brand-green text-black font-sora font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-brand-green-hover transition-colors">
-          Entrar
-        </a>
+      <div class="nav-links">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#comecar" class="btn btn-green">Entrar</a>
       </div>
 
-      <button class="md:hidden flex flex-col gap-1.5" id="mobile-toggle">
-        <span class="block w-6 h-0.5 bg-white"></span>
-        <span class="block w-6 h-0.5 bg-white"></span>
-        <span class="block w-6 h-0.5 bg-white"></span>
+      <button class="mobile-toggle" id="mobile-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </nav>
 
-  <section class="min-h-screen flex items-center relative overflow-hidden pt-24 pb-16 bg-brand-dark">
+  <section class="hero">
+    <div class="container hero-content">
 
-    <svg class="palm palm-left" viewBox="0 0 300 700" fill="none">
-      <path d="M150 700V300" stroke="#00DC82" stroke-width="8" stroke-linecap="round"/>
-      <path d="M150 300C150 300 60 200 10 170C70 200 130 270 150 300Z" fill="#00DC82" opacity="0.7"/>
-      <path d="M150 300C150 300 230 180 290 160C240 195 170 270 150 300Z" fill="#00DC82" opacity="0.6"/>
-      <path d="M150 300C150 300 100 140 120 60C135 140 145 240 150 300Z" fill="#00DC82" opacity="0.8"/>
-      <path d="M150 300C150 300 250 220 290 240C250 245 180 280 150 300Z" fill="#00DC82" opacity="0.5"/>
-      <path d="M150 300C150 300 50 240 20 270C60 265 120 285 150 300Z" fill="#00DC82" opacity="0.5"/>
-    </svg>
-    <svg class="palm palm-right" viewBox="0 0 300 700" fill="none">
-      <path d="M150 700V280" stroke="#00DC82" stroke-width="7" stroke-linecap="round"/>
-      <path d="M150 280C150 280 60 180 10 150C70 180 130 250 150 280Z" fill="#00DC82" opacity="0.7"/>
-      <path d="M150 280C150 280 240 160 290 140C240 175 170 250 150 280Z" fill="#00DC82" opacity="0.6"/>
-      <path d="M150 280C150 280 110 120 130 40C140 120 148 220 150 280Z" fill="#00DC82" opacity="0.8"/>
-      <path d="M150 280C150 280 250 200 290 220C250 225 180 260 150 280Z" fill="#00DC82" opacity="0.5"/>
-    </svg>
-
-    <div class="max-w-[1200px] mx-auto px-6 text-center flex flex-col items-center relative z-10">
-
-      <div class="reveal inline-flex items-center gap-2 bg-brand-dark-3 border border-brand-green-border-badge rounded-lg px-5 py-2 text-sm text-brand-green font-semibold mb-8">
-        <span class="w-1.5 h-1.5 bg-brand-green rounded-full animate-blink"></span>
-        Plataforma de troca de skills
+      <div class="hero-badge reveal">
+        <span class="dot"></span>
+        Troca de habilidades entre pessoas
       </div>
 
-      <h1 class="reveal delay-1 font-sora text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-5 max-w-3xl">
-        Ensine o que você <span class="text-brand-green">manja</span>.<br>
-        Aprenda o que você <span class="text-brand-orange">quer</span>.
+      <h1 class="reveal">
+        Ensine o que você <span class="text-green">manja</span>.<br>
+        Aprenda o que você <span class="text-orange">quer</span>.
       </h1>
 
-      <p class="reveal delay-2 text-gray-400 text-lg leading-relaxed mb-9 max-w-lg">
+      <p class="reveal">
         Conecte-se com pessoas que querem trocar habilidades.
-        Você ensina o que sabe, aprende o que precisa — tudo com um sistema justo de créditos.
+        Você ensina o que sabe, aprende o que precisa — sem custo, só troca.
       </p>
 
-      <div class="reveal delay-3 flex gap-3 flex-wrap justify-center mb-16">
-        <a href="#comecar" class="bg-brand-green text-brand-dark font-sora font-bold px-8 py-3.5 rounded-lg hover:bg-brand-green-hover hover:-translate-y-0.5 transition-all inline-flex items-center gap-2">
-          Começar agora
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="#como-funciona" class="border-2 border-brand-green text-brand-green font-sora font-bold px-8 py-3.5 rounded-lg hover:bg-brand-green-bg-subtle transition-all">
-          Como funciona
-        </a>
+      <div class="hero-buttons reveal">
+        <a href="#comecar" class="btn btn-green">Começar agora</a>
+        <a href="#como-funciona" class="btn btn-outline">Como funciona</a>
       </div>
 
-      <div class="flex gap-5 justify-center flex-wrap max-w-4xl">
+      <div class="cards-row">
 
-        <div class="reveal delay-3 bg-brand-dark-2 border border-brand-green-border rounded-xl p-5 w-[275px] hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-brand-green flex items-center justify-center font-sora font-bold text-sm text-brand-dark">LC</div>
+        <div class="profile-card reveal">
+          <div class="card-header">
+            <div class="avatar avatar-green">LC</div>
             <div>
-              <div class="font-sora font-bold text-sm">Lucas Costa</div>
-              <div class="text-xs text-gray-500">@lucascosta</div>
+              <div class="card-name">Lucas Costa</div>
+              <div class="card-user">@lucascosta</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-green w-12">Ensina</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">Python</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">FastAPI</span>
+          <div class="skill-row">
+            <span class="skill-label ensina">Ensina</span>
+            <div class="skill-tags">
+              <span class="tag tag-green">Python</span>
+              <span class="tag tag-green">FastAPI</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-orange w-12">Quer</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">Violão</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">Design</span>
+          <div class="skill-row">
+            <span class="skill-label quer">Quer</span>
+            <div class="skill-tags">
+              <span class="tag tag-orange">Violão</span>
+              <span class="tag tag-orange">Design</span>
             </div>
           </div>
-          <div class="mt-3.5 pt-3.5 border-t border-brand-green-border flex items-center justify-between">
-            <span class="text-sm font-semibold text-brand-green">3 matches!</span>
-            <button class="bg-brand-green text-brand-dark px-3.5 py-1 rounded-md font-sora font-bold text-xs">Ver</button>
+          <div class="card-footer">
+            <span>3 matches!</span>
+            <button>Ver</button>
           </div>
         </div>
 
-        <div class="reveal delay-4 bg-brand-dark-2 border border-brand-green-border rounded-xl p-5 w-[275px] hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-brand-orange flex items-center justify-center font-sora font-bold text-sm text-brand-dark">AM</div>
+        <div class="profile-card reveal">
+          <div class="card-header">
+            <div class="avatar avatar-orange">AM</div>
             <div>
-              <div class="font-sora font-bold text-sm">Ana Martins</div>
-              <div class="text-xs text-gray-500">@anamartins</div>
+              <div class="card-name">Ana Martins</div>
+              <div class="card-user">@anamartins</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-green w-12">Ensina</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">Violão</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">Canto</span>
+          <div class="skill-row">
+            <span class="skill-label ensina">Ensina</span>
+            <div class="skill-tags">
+              <span class="tag tag-green">Violão</span>
+              <span class="tag tag-green">Canto</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-orange w-12">Quer</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">Python</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">SQL</span>
+          <div class="skill-row">
+            <span class="skill-label quer">Quer</span>
+            <div class="skill-tags">
+              <span class="tag tag-orange">Python</span>
+              <span class="tag tag-orange">SQL</span>
             </div>
           </div>
-          <div class="mt-3.5 pt-3.5 border-t border-brand-green-border flex items-center justify-between">
-            <span class="text-sm font-semibold text-brand-green">Match!</span>
-            <button class="bg-brand-green text-brand-dark px-3.5 py-1 rounded-md font-sora font-bold text-xs">Trocar</button>
+          <div class="card-footer">
+            <span>Match!</span>
+            <button>Trocar</button>
           </div>
         </div>
 
-        <div class="reveal delay-5 bg-brand-dark-2 border border-brand-green-border rounded-xl p-5 w-[275px] hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center font-sora font-bold text-sm text-brand-dark">RO</div>
+        <div class="profile-card reveal">
+          <div class="card-header">
+            <div class="avatar avatar-green">RO</div>
             <div>
-              <div class="font-sora font-bold text-sm">Rafael Oliveira</div>
-              <div class="text-xs text-gray-500">@rafaoliveira</div>
+              <div class="card-name">Rafael Oliveira</div>
+              <div class="card-user">@rafaoliveira</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-green w-12">Ensina</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">Figma</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-green">UI/UX</span>
+          <div class="skill-row">
+            <span class="skill-label ensina">Ensina</span>
+            <div class="skill-tags">
+              <span class="tag tag-green">Figma</span>
+              <span class="tag tag-green">UI/UX</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[0.65rem] font-bold uppercase tracking-wider text-brand-orange w-12">Quer</span>
-            <div class="flex gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">React</span>
-              <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-brand-dark-3 text-brand-orange">Node</span>
+          <div class="skill-row">
+            <span class="skill-label quer">Quer</span>
+            <div class="skill-tags">
+              <span class="tag tag-orange">React</span>
+              <span class="tag tag-orange">Node</span>
             </div>
           </div>
-          <div class="mt-3.5 pt-3.5 border-t border-brand-green-border flex items-center justify-between">
-            <span class="text-sm font-semibold text-brand-green">5 matches!</span>
-            <button class="bg-brand-green text-brand-dark px-3.5 py-1 rounded-md font-sora font-bold text-xs">Ver</button>
+          <div class="card-footer">
+            <span>5 matches!</span>
+            <button>Ver</button>
           </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="como-funciona" class="section como-funciona">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Como funciona</span>
+        <h2 class="section-title">Simples assim<span class="text-orange">.</span></h2>
+        <p class="section-desc">Em três passos você já tá trocando conhecimento com pessoas reais.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <span class="step-number">Passo 01</span>
+          <h3>Cadastre suas skills</h3>
+          <p>Diz o que você manja e o que quer aprender.</p>
+        </div>
+        <div class="step-card reveal">
+          <span class="step-number">Passo 02</span>
+          <h3>Encontre matches</h3>
+          <p>O sistema encontra pessoas compatíveis com você.</p>
+        </div>
+        <div class="step-card reveal">
+          <span class="step-number">Passo 03</span>
+          <h3>Troque conhecimento</h3>
+          <p>Proponha a troca, aprenda e ensine. Desenrolou!</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="como-funciona" class="py-28 bg-brand-dark-2">
-    <div class="max-w-[1200px] mx-auto px-6 flex flex-col items-center text-center">
-      <span class="reveal font-sora text-xs font-bold uppercase tracking-[0.18em] text-brand-orange mb-3">Como funciona</span>
-      <h2 class="reveal delay-1 font-sora text-3xl sm:text-4xl font-extrabold mb-4">
-        Simples assim<span class="text-brand-orange">.</span>
-      </h2>
-      <p class="reveal delay-2 text-gray-400 text-base leading-relaxed max-w-lg mb-14">
-        Em três passos você já tá trocando conhecimento com pessoas reais.
-      </p>
+  <section id="categorias" class="section categorias">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Categorias</span>
+        <h2 class="section-title">O que você quer <span class="text-green">aprender</span>?</h2>
+        <p class="section-desc">De programação a culinária, tem gente querendo trocar em tudo.</p>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
-        <div class="reveal delay-1 bg-brand-dark border border-brand-green-border rounded-xl p-9 text-center hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <span class="font-sora text-[0.65rem] font-bold text-brand-orange uppercase tracking-wider">Passo 01</span>
-          <div class="w-14 h-14 mx-auto mt-5 mb-5 bg-brand-dark-3 border border-brand-green-border rounded-2xl flex items-center justify-center text-2xl">🎯</div>
-          <h3 class="font-sora text-lg font-bold mb-2">Cadastre suas skills</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">Diz o que você manja e o que quer aprender.</p>
+      <div class="cat-grid">
+        <div class="cat-card reveal">
+          <div class="cat-name">Programação</div>
         </div>
-        <div class="reveal delay-2 bg-brand-dark border border-brand-green-border rounded-xl p-9 text-center hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <span class="font-sora text-[0.65rem] font-bold text-brand-orange uppercase tracking-wider">Passo 02</span>
-          <div class="w-14 h-14 mx-auto mt-5 mb-5 bg-brand-dark-3 border border-brand-green-border rounded-2xl flex items-center justify-center text-2xl">🔗</div>
-          <h3 class="font-sora text-lg font-bold mb-2">Encontre matches</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">O sistema encontra pessoas compatíveis com você.</p>
+        <div class="cat-card reveal">
+          <div class="cat-name">Música</div>
         </div>
-        <div class="reveal delay-3 bg-brand-dark border border-brand-green-border rounded-xl p-9 text-center hover:border-brand-green-border-hover hover:-translate-y-1 transition-all">
-          <span class="font-sora text-[0.65rem] font-bold text-brand-orange uppercase tracking-wider">Passo 03</span>
-          <div class="w-14 h-14 mx-auto mt-5 mb-5 bg-brand-dark-3 border border-brand-green-border rounded-2xl flex items-center justify-center text-2xl">🤝</div>
-          <h3 class="font-sora text-lg font-bold mb-2">Troque conhecimento</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">Proponha a troca, aprenda e ensine. Desenrolou!</p>
+        <div class="cat-card reveal">
+          <div class="cat-name">Idiomas</div>
+        </div>
+        <div class="cat-card reveal">
+          <div class="cat-name">Design</div>
+        </div>
+        <div class="cat-card reveal">
+          <div class="cat-name">Culinária</div>
+        </div>
+        <div class="cat-card reveal">
+          <div class="cat-name">Fotografia</div>
+        </div>
+        <div class="cat-card reveal">
+          <div class="cat-name">Marketing</div>
+        </div>
+        <div class="cat-card reveal">
+          <div class="cat-name">Finanças</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="categorias" class="py-24 bg-brand-dark border-t border-brand-green-border">
-    <div class="max-w-[1200px] mx-auto px-6 flex flex-col items-center text-center">
-      <span class="reveal font-sora text-xs font-bold uppercase tracking-[0.18em] text-brand-orange mb-3">Categorias</span>
-      <h2 class="reveal delay-1 font-sora text-3xl sm:text-4xl font-extrabold mb-4">
-        O que você quer <span class="text-brand-green">aprender</span>?
-      </h2>
-      <p class="reveal delay-2 text-gray-400 text-base leading-relaxed max-w-lg mb-12">
-        De programação a culinária, tem gente querendo trocar em tudo.
-      </p>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 w-full">
-        <div class="reveal delay-1 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">💻</span>
-          <div class="font-sora font-bold text-sm mb-1">Programação</div>
-          <div class="text-xs text-gray-500">342 skills</div>
-        </div>
-        <div class="reveal delay-2 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">🎵</span>
-          <div class="font-sora font-bold text-sm mb-1">Música</div>
-          <div class="text-xs text-gray-500">189 skills</div>
-        </div>
-        <div class="reveal delay-3 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">🌍</span>
-          <div class="font-sora font-bold text-sm mb-1">Idiomas</div>
-          <div class="text-xs text-gray-500">276 skills</div>
-        </div>
-        <div class="reveal delay-4 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">🎨</span>
-          <div class="font-sora font-bold text-sm mb-1">Design</div>
-          <div class="text-xs text-gray-500">154 skills</div>
-        </div>
-        <div class="reveal delay-5 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">🍳</span>
-          <div class="font-sora font-bold text-sm mb-1">Culinária</div>
-          <div class="text-xs text-gray-500">98 skills</div>
-        </div>
-        <div class="reveal delay-6 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">📸</span>
-          <div class="font-sora font-bold text-sm mb-1">Fotografia</div>
-          <div class="text-xs text-gray-500">127 skills</div>
-        </div>
-        <div class="reveal delay-7 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">📈</span>
-          <div class="font-sora font-bold text-sm mb-1">Marketing</div>
-          <div class="text-xs text-gray-500">83 skills</div>
-        </div>
-        <div class="reveal delay-8 cat-card bg-brand-dark-2 border border-brand-green-border rounded-lg p-6 text-center cursor-pointer hover:border-brand-green hover:-translate-y-1 transition-all">
-          <span class="cat-emoji text-3xl mb-3 block">💰</span>
-          <div class="font-sora font-bold text-sm mb-1">Finanças</div>
-          <div class="text-xs text-gray-500">112 skills</div>
+  <section id="comecar" class="section cta">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Bora?</span>
+        <h2 class="section-title"><span class="text-green">Desenrola</span> suas skills <span class="text-orange">hoje</span></h2>
+        <p class="section-desc">Cadastre-se grátis e comece a trocar conhecimento agora mesmo.</p>
+        <div class="cta-form">
+          <input type="email" placeholder="Seu melhor e-mail">
+          <button class="btn btn-green">Criar conta</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="py-24 bg-brand-green">
-    <div class="max-w-[1200px] mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="reveal text-center py-10">
-          <div class="stat-number font-sora text-5xl sm:text-6xl font-extrabold text-brand-dark leading-none mb-2" data-target="1200">0</div>
-          <div class="text-brand-dark-3 text-base font-semibold">Skills cadastradas</div>
-        </div>
-        <div class="reveal delay-1 text-center py-10">
-          <div class="stat-number font-sora text-5xl sm:text-6xl font-extrabold text-brand-dark leading-none mb-2" data-target="800">0</div>
-          <div class="text-brand-dark-3 text-base font-semibold">Trocas realizadas</div>
-        </div>
-        <div class="reveal delay-2 text-center py-10">
-          <div class="stat-number font-sora text-5xl sm:text-6xl font-extrabold text-brand-dark leading-none mb-2" data-target="3500">0</div>
-          <div class="text-brand-dark-3 text-base font-semibold">Usuários ativos</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="depoimentos" class="py-24 bg-brand-dark-2 border-t border-brand-green-border">
-    <div class="max-w-[1200px] mx-auto px-6 flex flex-col items-center text-center">
-      <span class="reveal font-sora text-xs font-bold uppercase tracking-[0.18em] text-brand-orange mb-3">Depoimentos</span>
-      <h2 class="reveal delay-1 font-sora text-3xl sm:text-4xl font-extrabold mb-4">
-        Quem já <span class="text-brand-orange">desenrolou</span>
-      </h2>
-      <p class="reveal delay-2 text-gray-400 text-base leading-relaxed max-w-lg mb-12">
-        Histórias reais de quem trocou conhecimento na plataforma.
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
-        <div class="reveal delay-1 bg-brand-dark border border-brand-green-border rounded-xl p-8 text-left hover:border-brand-green-border-hover transition-all">
-          <div class="text-brand-orange text-sm mb-4 tracking-wider">★★★★★</div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6 italic">
-            "Eu sabia Python mas sempre quis aprender violão. Encontrei o Rafael que queria aprender automação. Trocamos por 2 meses e hoje toco Legião!"
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-brand-green flex items-center justify-center font-sora font-bold text-sm text-brand-dark">MC</div>
-            <div>
-              <div class="font-sora font-bold text-sm">Marina Costa</div>
-              <div class="text-xs text-gray-500">Dev Backend → Violonista</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="reveal delay-2 bg-brand-dark border border-brand-green-border rounded-xl p-8 text-left hover:border-brand-green-border-hover transition-all">
-          <div class="text-brand-orange text-sm mb-4 tracking-wider">★★★★★</div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6 italic">
-            "Achei que ninguém ia querer trocar culinária por Excel. Em 1 semana já tinha 4 matches. O sistema de créditos é muito justo."
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-brand-orange flex items-center justify-center font-sora font-bold text-sm text-brand-dark">PA</div>
-            <div>
-              <div class="font-sora font-bold text-sm">Pedro Alves</div>
-              <div class="text-xs text-gray-500">Chef amador → Mestre do Excel</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="reveal delay-3 bg-brand-dark border border-brand-green-border rounded-xl p-8 text-left hover:border-brand-green-border-hover transition-all">
-          <div class="text-brand-orange text-sm mb-4 tracking-wider">★★★★★</div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6 italic">
-            "Aprendi inglês conversando com uma americana que queria aprender português. Zero custo, 100% efetivo."
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center font-sora font-bold text-sm text-brand-dark">JS</div>
-            <div>
-              <div class="font-sora font-bold text-sm">Julia Santos</div>
-              <div class="text-xs text-gray-500">Estudante → Fluente em inglês</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="comecar" class="py-28 bg-brand-dark border-t border-brand-green-border">
-    <div class="max-w-[1200px] mx-auto px-6 text-center flex flex-col items-center">
-      <span class="reveal font-sora text-xs font-bold uppercase tracking-[0.18em] text-brand-orange mb-3">Bora?</span>
-      <h2 class="reveal delay-1 font-sora text-3xl sm:text-5xl font-extrabold mb-4">
-        <span class="text-brand-green">Desenrola</span> suas skills <span class="text-brand-orange">hoje</span>
-      </h2>
-      <p class="reveal delay-2 text-gray-400 text-base leading-relaxed max-w-lg mb-9">
-        Cadastre-se grátis e comece a trocar conhecimento agora mesmo.
-      </p>
-      <div class="reveal delay-3 flex gap-3 w-full max-w-md flex-col sm:flex-row">
-        <input
-          type="email"
-          placeholder="Seu melhor e-mail"
-          class="flex-1 bg-brand-dark-2 border border-brand-green-border rounded-lg px-5 py-3.5 text-white font-inter text-sm outline-none focus:border-brand-green transition-colors placeholder:text-gray-600"
-        >
-        <button class="bg-brand-green text-brand-dark font-sora font-bold px-8 py-3.5 rounded-lg hover:bg-brand-green-hover transition-colors whitespace-nowrap">
-          Criar conta
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <footer class="pt-12 pb-6 border-t border-brand-green-border-section bg-brand-dark-2">
-    <div class="max-w-[1200px] mx-auto px-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+  <footer>
+    <div class="container">
+      <div class="footer-top">
         <div>
-          <a href="#" class="footer-logo inline-block mb-4">
+          <a href="#" class="footer-logo">
             <img src="assets/images/logo.png" alt="desenrola!">
           </a>
-          <p class="text-gray-400 text-sm leading-relaxed max-w-[260px]">
+          <p class="footer-desc">
             A plataforma brasileira de troca de habilidades. Ensine o que sabe, aprenda o que quer.
           </p>
         </div>
 
-        <div>
-          <h4 class="font-sora text-xs font-bold uppercase tracking-wider text-brand-green mb-5">Plataforma</h4>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Como funciona</a>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Categorias</a>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Preços</a>
-          <a href="#" class="block text-gray-400 text-sm hover:text-white transition-colors">FAQ</a>
+        <div class="footer-col">
+          <h4>Plataforma</h4>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#categorias">Categorias</a>
+          <a href="#">FAQ</a>
         </div>
 
-        <div>
-          <h4 class="font-sora text-xs font-bold uppercase tracking-wider text-brand-green mb-5">Comunidade</h4>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Blog</a>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Discord</a>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Eventos</a>
-          <a href="#" class="block text-gray-400 text-sm hover:text-white transition-colors">Embaixadores</a>
-        </div>
-
-        <div>
-          <h4 class="font-sora text-xs font-bold uppercase tracking-wider text-brand-green mb-5">Legal</h4>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Termos de uso</a>
-          <a href="#" class="block text-gray-400 text-sm mb-2.5 hover:text-white transition-colors">Privacidade</a>
-          <a href="#" class="block text-gray-400 text-sm hover:text-white transition-colors">Cookies</a>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Termos de uso</a>
+          <a href="#">Privacidade</a>
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-brand-green-border-section gap-4">
-        <p class="text-gray-600 text-xs">&copy; 2026 desenrola! — Todos os direitos reservados.</p>
-        <div class="flex gap-2.5">
-          <a href="#" class="w-8 h-8 rounded-lg bg-brand-dark border border-brand-green-border flex items-center justify-center text-gray-400 hover:text-brand-green hover:border-brand-green transition-all">
+      <div class="footer-bottom">
+        <p>&copy; 2026 desenrola! — Todos os direitos reservados.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a href="#" class="w-8 h-8 rounded-lg bg-brand-dark border border-brand-green-border flex items-center justify-center text-gray-400 hover:text-brand-green hover:border-brand-green transition-all">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l11.7 16h4.3M4 20L20 4M8 20H4l16-16h4"/></svg>
-          </a>
-          <a href="#" class="w-8 h-8 rounded-lg bg-brand-dark border border-brand-green-border flex items-center justify-center text-gray-400 hover:text-brand-green hover:border-brand-green transition-all">
+          <a href="#" aria-label="GitHub">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
-          </a>
-          <a href="#" class="w-8 h-8 rounded-lg bg-brand-dark border border-brand-green-border flex items-center justify-center text-gray-400 hover:text-brand-green hover:border-brand-green transition-all">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z"/></svg>
           </a>
         </div>
       </div>
