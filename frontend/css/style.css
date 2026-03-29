@@ -77,14 +77,14 @@ nav.scrolled {
   gap: 32px;
 }
 
-.nav-links a {
+.nav-links a:not(.btn) {
   font-size: 14px;
   font-weight: 500;
   color: var(--gray);
   transition: color 0.2s;
 }
 
-.nav-links a:hover {
+.nav-links a:not(.btn):hover {
   color: #fff;
 }
 
