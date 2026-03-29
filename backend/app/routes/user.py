@@ -47,6 +47,32 @@ def update_me(data: UserUpdate, user: User = Depends(get_current_user), db: Sess
     db.refresh(user)
     return user
 
+@router.get("/{user_id}")
+def get_user_profile(user_id: int, db: Session = Depends(get_db)):
+    from app.models.skill import UserSkill, Skill
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(404, "Usuario nao encontrado")
+
+    user_skills = db.query(UserSkill).filter(UserSkill.user_id == user.id).all()
+    teaches = []
+    learns = []
+    for us in user_skills:
+        skill = db.query(Skill).filter(Skill.id == us.skill_id).first()
+        if us.type == "teaches":
+            teaches.append(skill.name)
+        else:
+            learns.append(skill.name)
+
+    return {
+        "id": user.id,
+        "name": user.name,
+        "avatar": user.avatar,
+        "role": user.role,
+        "teaches": teaches,
+        "learns": learns,
+    }
+
 @router.delete("/me")
 def delete_me(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     db.delete(user)

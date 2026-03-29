@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = 'profile.html';
+      window.location.href = 'dashboard.html';
     } catch {
       showAlert('alert', 'Erro de conexao com o servidor');
     }

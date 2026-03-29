@@ -1,0 +1,126 @@
+.dashboard-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.dashboard-header h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.dashboard-header p {
+  color: var(--gray);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s;
+}
+
+.tab:hover {
+  color: #fff;
+}
+
+.tab.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.swap-card {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.swap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.swap-name {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.swap-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.swap-status.pending {
+  background: rgba(255, 200, 0, 0.15);
+  color: #ffc800;
+}
+
+.swap-status.accepted {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.swap-status.rejected {
+  background: rgba(255, 77, 77, 0.15);
+  color: #ff4d4d;
+}
+
+.swap-detail {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.swap-contact {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--dark-3);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.swap-contact strong {
+  color: var(--green);
+}
+
+.swap-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.swap-actions .btn {
+  font-size: 12px;
+  padding: 6px 16px;
+}

@@ -5,3 +5,4 @@ pymysql
 bcrypt
 pyjwt
 python-dotenv
+python-multipart

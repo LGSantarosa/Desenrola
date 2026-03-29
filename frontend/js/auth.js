@@ -33,7 +33,11 @@ function showNavUser() {
     .toUpperCase()
     .slice(0, 2);
 
+  const avatarContent = user.avatar
+    ? '<img src="' + API + '/uploads/' + user.avatar + '" alt="avatar">'
+    : initials;
+
   navUser.innerHTML =
-    '<span class="avatar-small">' + initials + '</span>' +
-    '<span>' + user.name + '</span>';
+    '<span class="avatar-small">' + avatarContent + '</span>' +
+    '<span>' + user.name.split(' ')[0] + '</span>';
 }

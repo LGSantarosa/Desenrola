@@ -36,6 +36,15 @@ CREATE TABLE user_skill (
     UNIQUE (user_id, skill_id, type)
 );
 
+CREATE TABLE post (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    image VARCHAR(255) DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
 CREATE TABLE swap_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sender_id INT NOT NULL,
