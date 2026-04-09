@@ -29,10 +29,10 @@
 ## Modelagem do Banco
 
 <p align="center">
-  <img src="docs/db.png" alt="Diagrama ER" width="70%">
+  <img width="800" height="509" alt="image" src="https://github.com/user-attachments/assets/c5f24831-d63b-4edb-aaf9-3e4e0a296fec" />
+
 </p>
 
-<img width="201" height="251" alt="image" src="https://github.com/user-attachments/assets/4e4efc52-0a52-4a72-b2ae-b5e0b67b91fe" />
 
 ## Funcionalidades
 
