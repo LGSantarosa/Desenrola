@@ -116,3 +116,14 @@ uvicorn app.main:app --reload
 
 ### Frontend
 Abra `frontend/index.html` no navegador.
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
+
+## Contribuidores
+
+<a href="https://github.com/LGSantarosa">
+  <img src="https://github.com/LGSantarosa.png" width="80" style="border-radius:50%" alt="Luiz Santarosa"/>
+</a>
+<a href="https://github.com/Mateuscruz19">
+  <img src="https://github.com/Mateuscruz19.png" width="80" style="border-radius:50%" alt="Mateus Cruz"/>
+</a>
