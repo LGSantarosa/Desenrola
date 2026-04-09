@@ -32,7 +32,7 @@
   <img src="docs/db.png" alt="Diagrama ER" width="70%">
 </p>
 
-<img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
+<img width="201" height="251" alt="image" src="https://github.com/user-attachments/assets/4e4efc52-0a52-4a72-b2ae-b5e0b67b91fe" />
 
 ## Funcionalidades
 
