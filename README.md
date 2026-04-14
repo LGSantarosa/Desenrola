@@ -5,8 +5,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/HTML%20%7C%20CSS%20%7C%20JS-00DC82?style=flat-square&logo=html5&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-FF6B00?style=flat-square&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MySQL-00DC82?style=flat-square&logo=mysql&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Python-FF6B00?style=flat-square&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Jinja2-00DC82?style=flat-square&logo=jinja&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-FF6B00?style=flat-square&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Python-00DC82?style=flat-square&logo=python&logoColor=white"/>
 </p>
 
 <p align="center">
@@ -56,43 +57,43 @@
 
 ```
 Desenrola/
-├── frontend/
-│   ├── index.html
-│   ├── register.html
-│   ├── login.html
-│   ├── profile.html
-│   ├── css/
-│   │   ├── style.css
-│   │   └── app.css
-│   ├── js/
-│   │   ├── main.js
-│   │   ├── validation.js
-│   │   ├── auth.js
-│   │   ├── register.js
-│   │   ├── login.js
-│   │   └── profile.js
-│   └── assets/images/
 ├── backend/
 │   ├── schema.sql
+│   ├── seed.py
 │   ├── requirements.txt
 │   ├── .env
-│   └── app/
-│       ├── main.py
-│       ├── core/
-│       │   ├── database.py
-│       │   └── auth.py
-│       ├── models/
-│       │   └── user.py
-│       ├── schemas/
-│       │   └── user.py
-│       ├── routes/
-│       │   ├── auth.py
-│       │   └── user.py
-│       └── services/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── core/
+│   │   │   ├── database.py
+│   │   │   └── auth.py
+│   │   ├── schemas/
+│   │   │   └── user.py
+│   │   └── routes/
+│   │       ├── auth.py
+│   │       ├── user.py
+│   │       ├── skill.py
+│   │       ├── match.py
+│   │       ├── swap.py
+│   │       ├── feed.py
+│   │       ├── post.py
+│   │       └── upload.py
+│   ├── templates/
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   ├── dashboard.html
+│   │   ├── onboarding.html
+│   │   ├── match.html
+│   │   ├── profile.html
+│   │   ├── swaps.html
+│   │   └── user.html
+│   └── static/
+│       ├── css/
+│       ├── js/
+│       └── assets/images/
+├── frontend/
 └── docs/
-    ├── db.png
-    ├── Screenshot_1.png
-    └── Screenshot_2.png
 ```
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
@@ -105,6 +106,17 @@ Importe o arquivo `backend/schema.sql` no MySQL Workbench ou execute via termina
 mysql -u root -p < backend/schema.sql
 ```
 
+### Variaveis de ambiente
+Crie o arquivo `backend/.env`:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=sua_senha
+DB_NAME=desenrola
+DB_PORT=3306
+JWT_SECRET=sua_chave_secreta
+```
+
 ### Backend
 ```bash
 cd backend
@@ -114,8 +126,8 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Frontend
-Abra `frontend/index.html` no navegador.
+### Acessar
+Abra `http://localhost:8000` no navegador. O backend serve as paginas via Jinja2.
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=00DC82&height=2&width=100%25" width="100%"/>
 

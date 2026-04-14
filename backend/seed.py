@@ -3,11 +3,8 @@ import random
 import uuid
 import ssl
 import urllib.request
-from app.core.database import SessionLocal
+from app.core.database import get_connection
 from app.core.auth import hash_password
-from app.models.skill import Category, Skill, UserSkill
-from app.models.user import User
-from app.models.post import Post
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -15,6 +12,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
+
 
 def download_image(url, retries=3):
     filename = str(uuid.uuid4()) + ".jpg"
@@ -34,7 +32,9 @@ def download_image(url, retries=3):
                 print("  falha ao baixar: " + str(e))
     return None
 
-db = SessionLocal()
+
+conn = get_connection()
+cur = conn.cursor()
 
 data = {
     "Programacao": ["Python", "JavaScript", "Java", "C++", "React", "Node.js", "SQL", "FastAPI", "HTML/CSS", "TypeScript"],
@@ -48,18 +48,20 @@ data = {
 }
 
 for cat_name, skills in data.items():
-    cat = db.query(Category).filter(Category.name == cat_name).first()
+    cur.execute("SELECT id FROM category WHERE name = %s", (cat_name,))
+    cat = cur.fetchone()
     if not cat:
-        cat = Category(name=cat_name)
-        db.add(cat)
-        db.flush()
+        cur.execute("INSERT INTO category (name) VALUES (%s)", (cat_name,))
+        cat_id = cur.lastrowid
+    else:
+        cat_id = cat["id"]
 
     for skill_name in skills:
-        existing = db.query(Skill).filter(Skill.name == skill_name, Skill.category_id == cat.id).first()
-        if not existing:
-            db.add(Skill(name=skill_name, category_id=cat.id))
+        cur.execute("SELECT id FROM skill WHERE name = %s AND category_id = %s", (skill_name, cat_id))
+        if not cur.fetchone():
+            cur.execute("INSERT INTO skill (name, category_id) VALUES (%s, %s)", (skill_name, cat_id))
 
-db.commit()
+conn.commit()
 
 fake_users = [
     {"name": "Lucas Costa", "email": "lucas@email.com", "cpf": "111.111.111-11", "phone": "(11) 91111-1111", "birth_date": "1998-03-15"},
@@ -74,43 +76,47 @@ fake_users = [
     {"name": "Fernanda Lima", "email": "fernanda@email.com", "cpf": "100.100.100-10", "phone": "(91) 90000-0000", "birth_date": "2001-02-14"},
 ]
 
-all_skills = db.query(Skill).all()
+cur.execute("SELECT id FROM skill")
+all_skills = cur.fetchall()
+all_skill_ids = [s["id"] for s in all_skills]
 hashed = hash_password("123456")
 
 print("Baixando avatares...")
 for i, u in enumerate(fake_users):
-    existing = db.query(User).filter(User.email == u["email"]).first()
+    cur.execute("SELECT id, avatar FROM user WHERE email = %s", (u["email"],))
+    existing = cur.fetchone()
     if existing:
-        if not existing.avatar:
+        if not existing["avatar"]:
             avatar = download_image("https://i.pravatar.cc/200?img=" + str(i + 1))
             if avatar:
-                existing.avatar = avatar
+                cur.execute("UPDATE user SET avatar = %s WHERE id = %s", (avatar, existing["id"]))
         continue
 
     avatar = download_image("https://i.pravatar.cc/200?img=" + str(i + 1))
 
-    user = User(
-        name=u["name"],
-        email=u["email"],
-        password=hashed,
-        cpf=u["cpf"],
-        phone=u["phone"],
-        birth_date=u["birth_date"],
-        avatar=avatar,
+    cur.execute(
+        """INSERT INTO user (name, email, password, cpf, phone, birth_date, avatar)
+           VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+        (u["name"], u["email"], hashed, u["cpf"], u["phone"], u["birth_date"], avatar),
     )
-    db.add(user)
-    db.flush()
+    user_id = cur.lastrowid
 
-    teaches = random.sample(all_skills, random.randint(2, 4))
-    remaining = [s for s in all_skills if s not in teaches]
+    teaches = random.sample(all_skill_ids, random.randint(2, 4))
+    remaining = [s for s in all_skill_ids if s not in teaches]
     learns = random.sample(remaining, random.randint(2, 4))
 
-    for skill in teaches:
-        db.add(UserSkill(user_id=user.id, skill_id=skill.id, type="teaches"))
-    for skill in learns:
-        db.add(UserSkill(user_id=user.id, skill_id=skill.id, type="learns"))
+    for skill_id in teaches:
+        cur.execute(
+            "INSERT INTO user_skill (user_id, skill_id, type) VALUES (%s, %s, 'teaches')",
+            (user_id, skill_id),
+        )
+    for skill_id in learns:
+        cur.execute(
+            "INSERT INTO user_skill (user_id, skill_id, type) VALUES (%s, %s, 'learns')",
+            (user_id, skill_id),
+        )
 
-db.commit()
+conn.commit()
 
 posts_data = [
     {"email": "lucas@email.com", "content": "Alguem aqui manja de React? To tentando migrar um projeto de jQuery e ta sendo uma aventura", "image": "https://picsum.photos/seed/code1/600/400"},
@@ -130,14 +136,15 @@ posts_data = [
     {"email": "pedro@email.com", "content": "Lightroom mobile e subestimado demais. Da pra editar foto profissional so no celular", "image": "https://picsum.photos/seed/light1/600/400"},
 ]
 
-existing_posts = db.query(Post).count()
-if existing_posts > 0:
-    db.query(Post).delete()
-    db.commit()
+cur.execute("SELECT COUNT(*) AS c FROM post")
+if cur.fetchone()["c"] > 0:
+    cur.execute("DELETE FROM post")
+    conn.commit()
 
 print("Baixando imagens dos posts...")
 for p in posts_data:
-    user = db.query(User).filter(User.email == p["email"]).first()
+    cur.execute("SELECT id FROM user WHERE email = %s", (p["email"],))
+    user = cur.fetchone()
     if not user:
         continue
 
@@ -145,8 +152,12 @@ for p in posts_data:
     if p["image"]:
         image_name = download_image(p["image"])
 
-    db.add(Post(user_id=user.id, content=p["content"], image=image_name))
+    cur.execute(
+        "INSERT INTO post (user_id, content, image) VALUES (%s, %s, %s)",
+        (user["id"], p["content"], image_name),
+    )
 
-db.commit()
-db.close()
+conn.commit()
+cur.close()
+conn.close()
 print("Seed concluido! 10 usuarios com avatar e 15 posts com imagens.")

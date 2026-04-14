@@ -1,17 +1,28 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+import pymysql
+from pymysql.cursors import DictCursor
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-engine = create_engine(os.getenv("DATABASE_URL"))
-SessionLocal = sessionmaker(bind=engine)
-Base = declarative_base()
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD", ""),
+    "database": os.getenv("DB_NAME", "desenrola"),
+    "port": int(os.getenv("DB_PORT", 3306)),
+    "cursorclass": DictCursor,
+    "autocommit": False,
+}
+
+
+def get_connection():
+    return pymysql.connect(**DB_CONFIG)
+
 
 def get_db():
-    db = SessionLocal()
+    conn = get_connection()
     try:
-        yield db
+        yield conn
     finally:
-        db.close()
+        conn.close()

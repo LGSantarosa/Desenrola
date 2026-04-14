@@ -1,17 +1,17 @@
 import os
 import uuid
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
-from sqlalchemy.orm import Session
+from pymysql.connections import Connection
 from app.core.database import get_db
-from app.models.user import User
 from app.routes.user import get_current_user
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "uploads")
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
+
 @router.post("/avatar")
-async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
     if not file.content_type.startswith("image/"):
         raise HTTPException(400, "Arquivo deve ser uma imagem")
 
@@ -25,7 +25,8 @@ async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_c
     with open(filepath, "wb") as f:
         f.write(content)
 
-    user.avatar = filename
-    db.commit()
+    with db.cursor() as cur:
+        cur.execute("UPDATE user SET avatar = %s WHERE id = %s", (filename, user["id"]))
+        db.commit()
 
     return {"avatar": filename}
