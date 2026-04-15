@@ -3,11 +3,114 @@ import random
 import uuid
 import ssl
 import urllib.request
-from app.core.database import get_connection
+import pymysql
+from pymysql.cursors import DictCursor
+from dotenv import load_dotenv
+from app.core.database import get_connection, DB_CONFIG
 from app.core.auth import hash_password
+
+load_dotenv()
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+DB_NAME = DB_CONFIG["database"]
+
+bootstrap_conn = pymysql.connect(
+    host=DB_CONFIG["host"],
+    user=DB_CONFIG["user"],
+    password=DB_CONFIG["password"],
+    port=DB_CONFIG["port"],
+    cursorclass=DictCursor,
+    autocommit=True,
+)
+with bootstrap_conn.cursor() as c:
+    c.execute("CREATE DATABASE IF NOT EXISTS " + DB_NAME + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+bootstrap_conn.close()
+
+ddl_conn = get_connection()
+ddl_cur = ddl_conn.cursor()
+
+ddl_cur.execute("DROP TABLE IF EXISTS post")
+ddl_cur.execute("DROP TABLE IF EXISTS swap_request")
+ddl_cur.execute("DROP TABLE IF EXISTS user_skill")
+ddl_cur.execute("DROP TABLE IF EXISTS skill")
+ddl_cur.execute("DROP TABLE IF EXISTS category")
+ddl_cur.execute("DROP TABLE IF EXISTS user")
+
+ddl_cur.execute("""
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    email VARCHAR(160) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    cpf VARCHAR(20) NOT NULL UNIQUE,
+    phone VARCHAR(30),
+    birth_date DATE,
+    avatar VARCHAR(255),
+    role VARCHAR(20) NOT NULL DEFAULT 'cliente',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE category (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(80) NOT NULL UNIQUE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE skill (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    category_id INT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE user_skill (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    type ENUM('teaches','learns') NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES skill(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE swap_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    offered_skill_id INT NOT NULL,
+    desired_skill_id INT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (offered_skill_id) REFERENCES skill(id) ON DELETE CASCADE,
+    FOREIGN KEY (desired_skill_id) REFERENCES skill(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE post (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    image VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_conn.commit()
+ddl_cur.close()
+ddl_conn.close()
+print("Tabelas criadas.")
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False

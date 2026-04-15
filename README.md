@@ -58,7 +58,6 @@
 ```
 Desenrola/
 ├── backend/
-│   ├── schema.sql
 │   ├── seed.py
 │   ├── requirements.txt
 │   ├── .env
@@ -101,10 +100,7 @@ Desenrola/
 ## Como rodar
 
 ### Banco de dados
-Importe o arquivo `backend/schema.sql` no MySQL Workbench ou execute via terminal:
-```bash
-mysql -u root -p < backend/schema.sql
-```
+Crie o banco `desenrola` no MySQL e rode `python backend/seed.py` para popular.
 
 ### Variaveis de ambiente
 Crie o arquivo `backend/.env`:

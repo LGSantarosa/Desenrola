@@ -1,6 +1,8 @@
-fastapi
+fastapi<0.116
+starlette<0.47
 uvicorn
 pymysql
+cryptography
 bcrypt
 pyjwt
 python-dotenv
