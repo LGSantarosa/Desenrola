@@ -99,26 +99,39 @@ Desenrola/
 
 ## Como rodar
 
-### Banco de dados
-Crie o banco `desenrola` no MySQL e rode `python backend/seed.py` para popular.
+### 1. Usuario do MySQL
+No Ubuntu o `root` usa `auth_socket` e nao aceita senha via TCP. Crie um usuario dedicado:
+```bash
+sudo mysql -e "CREATE USER 'desenrola'@'localhost' IDENTIFIED BY 'desenrola123'; GRANT ALL PRIVILEGES ON desenrola.* TO 'desenrola'@'localhost'; FLUSH PRIVILEGES;"
+```
 
-### Variaveis de ambiente
+### 2. Variaveis de ambiente
 Crie o arquivo `backend/.env`:
 ```env
 DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha
+DB_USER=desenrola
+DB_PASSWORD=desenrola123
 DB_NAME=desenrola
 DB_PORT=3306
-JWT_SECRET=sua_chave_secreta
+JWT_SECRET=troque-esta-chave
 ```
 
-### Backend
+### 3. Backend
 ```bash
 cd backend
 python -m venv venv
-venv\Scripts\activate
+source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### 4. Banco de dados
+O `seed.py` cria o database, todas as tabelas e popula com dados de exemplo:
+```bash
+python seed.py
+```
+
+### 5. Subir o servidor
+```bash
 uvicorn app.main:app --reload
 ```
 
