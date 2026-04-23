@@ -42,12 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const step1 = document.getElementById('step-1');
+  const step2Form = document.getElementById('step-2-form');
   const step2 = document.getElementById('step-2');
   const step3 = document.getElementById('step-3');
 
   document.getElementById('next-1').addEventListener('click', () => {
     step1.classList.add('hidden');
-    step2.classList.remove('hidden');
+    step2Form.classList.remove('hidden');
   });
 
   document.getElementById('next-2').addEventListener('click', () => {
