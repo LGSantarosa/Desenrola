@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/css/app.css?v=3">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
         <img src="/static/assets/images/logo.png" alt="desenrola!">
       </a>
       <div class="nav-links">
-        <a href="/register">Criar conta</a>
+        <a href="/register">Ja tenho conta</a>
       </div>
     </div>
   </nav>
@@ -28,32 +28,34 @@
       <h1>Entrar</h1>
       <p class="subtitle">Acesse sua conta pra continuar trocando habilidades.</p>
 
-      <div class="alert alert-error" id="alert"></div>
+      {% if error %}
+      <div class="alert alert-error" style="display:block">{{ error }}</div>
+      {% endif %}
 
-      <form id="login-form" novalidate>
+      <form method="POST" action="/auth/login" novalidate>
         <div class="form-group">
           <label>E-mail <span class="required">*</span></label>
-          <input type="email" id="email" placeholder="Seu e-mail cadastrado" required>
+          <input type="email" name="email" id="email" value="{{ form.email or '' }}" placeholder="Seu e-mail cadastrado" required>
           <span class="hint">O e-mail que voce usou no cadastro</span>
           <span class="error-msg">E-mail invalido</span>
         </div>
 
         <div class="form-group">
           <label>Senha <span class="required">*</span></label>
-          <input type="password" id="password" placeholder="Sua senha" required>
+          <input type="password" name="password" id="password" placeholder="Sua senha" required>
           <span class="hint">A senha da sua conta</span>
           <span class="error-msg">Preencha a senha</span>
         </div>
 
         <div class="form-footer">
-          <button type="submit" class="btn btn-green btn-full" id="submit-btn" disabled>Entrar</button>
+          <button type="submit" class="btn btn-green btn-full">Entrar</button>
           <p class="link">Nao tem conta? <a href="/register">Criar conta</a></p>
         </div>
       </form>
     </div>
   </div>
 
-  <script src="/static/js/validation.js"></script>
-  <script src="/static/js/login.js"></script>
+  <script src="/static/js/validation.js?v=3"></script>
+  <script src="/static/js/login.js?v=3"></script>
 </body>
 </html>

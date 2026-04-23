@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css">
-  <link rel="stylesheet" href="/static/css/onboarding.css">
+  <link rel="stylesheet" href="/static/css/app.css?v=3">
+  <link rel="stylesheet" href="/static/css/onboarding.css?v=3">
 </head>
 <body>
 
@@ -21,7 +21,16 @@
         </a>
       </div>
       <div class="nav-right">
-        <div class="nav-user" id="nav-user"></div>
+        <div class="nav-user">
+          <span class="avatar-small">
+            {% if user.avatar %}
+              <img src="/uploads/{{ user.avatar }}" alt="avatar">
+            {% else %}
+              {{ user.name.split(' ')[0][0] | upper }}
+            {% endif %}
+          </span>
+          <span>{{ user.name.split(' ')[0] }}</span>
+        </div>
       </div>
     </div>
   </nav>
@@ -33,52 +42,87 @@
         <h1>Foto de perfil</h1>
         <p class="subtitle">Opcional, mas ajuda as pessoas a te reconhecerem.</p>
 
-        <div class="avatar-upload" id="avatar-area">
+        <form method="POST" action="/upload/avatar" enctype="multipart/form-data" class="avatar-upload" id="avatar-form">
+          <input type="hidden" name="redirect_to" value="/onboarding">
           <div class="avatar-preview" id="avatar-preview">
-            <span id="avatar-initials"></span>
+            {% if user.avatar %}
+              <img src="/uploads/{{ user.avatar }}" alt="avatar">
+            {% else %}
+              <span>{{ user.name.split(' ')[0][0] | upper }}</span>
+            {% endif %}
           </div>
-          <input type="file" id="avatar-input" accept="image/*" hidden>
+          <input type="file" name="file" id="avatar-input" accept="image/*" hidden>
           <button type="button" class="btn btn-outline" id="avatar-btn">Escolher foto</button>
           <span class="hint">JPG ou PNG, max 2MB</span>
-        </div>
+          <span class="error-msg" id="avatar-error">Imagem deve ter no maximo 2MB</span>
+        </form>
 
         <div class="step-actions">
-          <button class="btn btn-green btn-full" id="next-1">Continuar</button>
-          <button class="btn-skip" id="skip-1">Pular</button>
+          <button type="button" class="btn btn-green btn-full" id="next-1">Continuar</button>
         </div>
       </div>
 
-      <div class="step hidden" id="step-2">
-        <h1>O que voce <span class="text-green">ensina</span>?</h1>
-        <p class="subtitle">Selecione as habilidades que voce pode ensinar.</p>
+      <form class="step hidden" id="step-2-form" method="POST" action="/skills/me/save">
+        <div id="step-2">
+          <h1>O que voce <span class="text-green">ensina</span>?</h1>
+          <p class="subtitle">Selecione as habilidades que voce pode ensinar.</p>
 
-        <div class="categories-list" id="teaches-list"></div>
+          <div class="categories-list">
+            {% for cat in categories %}
+            <div class="category-group">
+              <div class="category-header">
+                <span>{{ cat.name }}</span>
+                <span class="arrow">&#9654;</span>
+              </div>
+              <div class="category-skills">
+                {% for s in cat.skills %}
+                <label class="skill-option {% if s.id in selected_teach_ids %}selected-green{% endif %}">
+                  <input type="checkbox" name="teaches" value="{{ s.id }}" hidden {% if s.id in selected_teach_ids %}checked{% endif %}>
+                  {{ s.name }}
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
 
-        <div class="selected-skills" id="teaches-selected"></div>
-
-        <div class="step-actions">
-          <button class="btn btn-green btn-full" id="next-2" disabled>Continuar</button>
+          <div class="step-actions">
+            <button type="button" class="btn btn-green btn-full" id="next-2">Continuar</button>
+          </div>
         </div>
-      </div>
 
-      <div class="step hidden" id="step-3">
-        <h1>O que voce quer <span class="text-orange">aprender</span>?</h1>
-        <p class="subtitle">Selecione as habilidades que voce quer aprender.</p>
+        <div class="step hidden" id="step-3">
+          <h1>O que voce quer <span class="text-orange">aprender</span>?</h1>
+          <p class="subtitle">Selecione as habilidades que voce quer aprender.</p>
 
-        <div class="categories-list" id="learns-list"></div>
+          <div class="categories-list">
+            {% for cat in categories %}
+            <div class="category-group">
+              <div class="category-header">
+                <span>{{ cat.name }}</span>
+                <span class="arrow">&#9654;</span>
+              </div>
+              <div class="category-skills">
+                {% for s in cat.skills %}
+                <label class="skill-option {% if s.id in selected_learn_ids %}selected-orange{% endif %}">
+                  <input type="checkbox" name="learns" value="{{ s.id }}" hidden {% if s.id in selected_learn_ids %}checked{% endif %}>
+                  {{ s.name }}
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
 
-        <div class="selected-skills" id="learns-selected"></div>
-
-        <div class="step-actions">
-          <button class="btn btn-green btn-full" id="finish-btn" disabled>Finalizar</button>
+          <div class="step-actions">
+            <button type="submit" class="btn btn-green btn-full">Finalizar</button>
+          </div>
         </div>
-      </div>
+      </form>
 
     </div>
   </div>
 
-  <script src="/static/js/validation.js"></script>
-  <script src="/static/js/auth.js"></script>
-  <script src="/static/js/onboarding.js"></script>
+  <script src="/static/js/onboarding.js?v=3"></script>
 </body>
 </html>

@@ -1,85 +1,37 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Form, Request
+from fastapi.responses import RedirectResponse
 from pymysql.connections import Connection
+from typing import List
 from app.core.database import get_db
-from app.routes.user import get_current_user
+from app.core.auth import get_current_user
 
-router = APIRouter(prefix="/skills", tags=["skills"])
+router = APIRouter()
 
 
-@router.get("/categories")
-def list_categories(db: Connection = Depends(get_db)):
+@router.post("/skills/me/save")
+def save_skills(
+    request: Request,
+    teaches: List[int] = Form(default=[]),
+    learns: List[int] = Form(default=[]),
+    db: Connection = Depends(get_db),
+):
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+
     with db.cursor() as cur:
-        cur.execute("SELECT id, name FROM category ORDER BY name")
-        cats = cur.fetchall()
+        cur.execute("DELETE FROM user_skill WHERE user_id = %s", (user["id"],))
 
-        result = []
-        for cat in cats:
+        for skill_id in set(teaches):
             cur.execute(
-                "SELECT id, name FROM skill WHERE category_id = %s ORDER BY name",
-                (cat["id"],),
+                "INSERT INTO user_skill (user_id, skill_id, type) VALUES (%s, %s, 'teaches')",
+                (user["id"], skill_id),
             )
-            skills = cur.fetchall()
-            result.append({
-                "id": cat["id"],
-                "name": cat["name"],
-                "skills": [{"id": s["id"], "name": s["name"]} for s in skills],
-            })
-    return result
-
-
-@router.get("/me")
-def my_skills(user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute(
-            """SELECT us.id, us.type, s.id AS skill_id, s.name
-               FROM user_skill us JOIN skill s ON s.id = us.skill_id
-               WHERE us.user_id = %s""",
-            (user["id"],),
-        )
-        rows = cur.fetchall()
-
-    teaches = [{"id": r["id"], "skill_id": r["skill_id"], "name": r["name"]}
-               for r in rows if r["type"] == "teaches"]
-    learns = [{"id": r["id"], "skill_id": r["skill_id"], "name": r["name"]}
-              for r in rows if r["type"] == "learns"]
-    return {"teaches": teaches, "learns": learns}
-
-
-@router.post("/me")
-def add_skill(skill_id: int, type: str, user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
-    if type not in ("teaches", "learns"):
-        raise HTTPException(400, "Tipo deve ser 'teaches' ou 'learns'")
-
-    with db.cursor() as cur:
-        cur.execute("SELECT id FROM skill WHERE id = %s", (skill_id,))
-        if not cur.fetchone():
-            raise HTTPException(404, "Skill nao encontrada")
-
-        cur.execute(
-            "SELECT id FROM user_skill WHERE user_id = %s AND skill_id = %s AND type = %s",
-            (user["id"], skill_id, type),
-        )
-        if cur.fetchone():
-            raise HTTPException(400, "Skill ja adicionada")
-
-        cur.execute(
-            "INSERT INTO user_skill (user_id, skill_id, type) VALUES (%s, %s, %s)",
-            (user["id"], skill_id, type),
-        )
+        for skill_id in set(learns):
+            cur.execute(
+                "INSERT INTO user_skill (user_id, skill_id, type) VALUES (%s, %s, 'learns')",
+                (user["id"], skill_id),
+            )
         db.commit()
-    return {"message": "Skill adicionada"}
 
-
-@router.delete("/me/{user_skill_id}")
-def remove_skill(user_skill_id: int, user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT id FROM user_skill WHERE id = %s AND user_id = %s",
-            (user_skill_id, user["id"]),
-        )
-        if not cur.fetchone():
-            raise HTTPException(404, "Skill nao encontrada")
-
-        cur.execute("DELETE FROM user_skill WHERE id = %s", (user_skill_id,))
-        db.commit()
-    return {"message": "Skill removida"}
+    return RedirectResponse("/dashboard", status_code=303)

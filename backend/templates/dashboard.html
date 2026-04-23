@@ -8,41 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css">
-  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/app.css?v=3">
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=3">
 </head>
 <body>
 
-  <nav>
-    <div class="nav-inner">
-      <div class="nav-left">
-        <a href="/dashboard" class="nav-logo">
-          <img src="/static/assets/images/camaleon.png" alt="desenrola!">
-        </a>
-        <input type="text" class="nav-search" id="nav-search" placeholder="Buscar pessoas...">
-      </div>
-      <div class="nav-tabs">
-        <a href="/dashboard" class="nav-tab active" title="Feed">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </a>
-        <a href="/match" class="nav-tab" title="Match">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </a>
-        <a href="/swaps" class="nav-tab" title="Trocas">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        </a>
-        <a href="/profile" class="nav-tab" title="Perfil">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </a>
-      </div>
-      <div class="nav-right">
-        <div class="nav-user" id="nav-user"></div>
-        <button class="nav-logout" id="logout-btn" title="Sair">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
-      </div>
-    </div>
-  </nav>
+  {% set active_tab = 'feed' %}
+  {% include "_nav.html" with context %}
 
   <div class="dashboard">
     <div class="dashboard-layout">
@@ -50,35 +22,134 @@
       <div class="feed-column">
         <h2>Feed</h2>
 
-        <div class="new-post-form">
-          <textarea id="post-content" placeholder="Compartilhe algo com a comunidade..."></textarea>
+        <form class="new-post-form" method="POST" action="/posts/create" enctype="multipart/form-data">
+          <textarea name="content" id="post-content" placeholder="Compartilhe algo com a comunidade..." required></textarea>
           <div class="image-preview" id="image-preview">
             <img id="preview-img" src="" alt="preview">
-            <button class="remove-img" id="remove-img">x</button>
+            <button type="button" class="remove-img" id="remove-img">x</button>
           </div>
           <div class="new-post-actions">
             <div>
-              <input type="file" id="post-image" accept="image/*" hidden>
-              <button class="image-upload-btn" id="add-image-btn">Adicionar imagem</button>
+              <input type="file" name="image" id="post-image" accept="image/*" hidden>
+              <button type="button" class="image-upload-btn" id="add-image-btn">Adicionar imagem</button>
             </div>
-            <button class="btn btn-green" id="post-btn">Publicar</button>
+            <button type="submit" class="btn btn-green">Publicar</button>
           </div>
-        </div>
+        </form>
 
-        <div id="posts-feed"></div>
+        <div id="posts-feed">
+          {% if posts %}
+            {% for post in posts %}
+              {% set first = post.author_name.split(' ')[0] %}
+              {% set last = post.author_name.split(' ')[-1] if post.author_name.split(' ')|length > 1 else '' %}
+              {% set initials = (first[0] ~ (last[0] if last else '')) | upper %}
+              <div class="post-card">
+                <div class="post-header">
+                  <div class="post-avatar">
+                    {% if post.author_avatar %}
+                      <img src="/uploads/{{ post.author_avatar }}" alt="avatar">
+                    {% else %}
+                      {{ initials }}
+                    {% endif %}
+                  </div>
+                  <div class="post-header-meta">
+                    <div class="post-author">
+                      <a href="/user/{{ post.author_id }}">{{ post.author_name }}</a>
+                    </div>
+                    <div class="post-time">{{ post.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+                  </div>
+                  {% if post.author_id == user.id %}
+                    <button class="post-delete-btn" data-post-id="{{ post.id }}" aria-label="Excluir publicacao" title="Excluir">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  {% endif %}
+                </div>
+                <div class="post-content">{{ post.content }}</div>
+                {% if post.image %}
+                  <img class="post-image" src="/uploads/{{ post.image }}" alt="post">
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">Nenhuma publicacao ainda. Seja o primeiro!</div>
+          {% endif %}
+        </div>
       </div>
 
       <div class="discover-column">
         <h2>Descobrir pessoas</h2>
-        <div class="filters" id="filters"></div>
-        <div class="discover-feed" id="discover-feed"></div>
+        <div class="filters">
+          <a href="/dashboard" class="filter-btn {% if not active_category %}active{% endif %}">Todas</a>
+          {% for cat in categories %}
+            <a href="/dashboard?category_id={{ cat.id }}" class="filter-btn {% if active_category == cat.id %}active{% endif %}">{{ cat.name }}</a>
+          {% endfor %}
+        </div>
+        <div class="discover-feed">
+          {% if people %}
+            {% for p in people %}
+              {% set fn = p.user.name.split(' ')[0] %}
+              {% set ln = p.user.name.split(' ')[-1] if p.user.name.split(' ')|length > 1 else '' %}
+              {% set ini = (fn[0] ~ (ln[0] if ln else '')) | upper %}
+              <div class="feed-card">
+                <div class="feed-card-top">
+                  <div class="feed-avatar">
+                    {% if p.user.avatar %}
+                      <img src="/uploads/{{ p.user.avatar }}" alt="avatar">
+                    {% else %}{{ ini }}{% endif %}
+                  </div>
+                  <div class="feed-name"><a href="/user/{{ p.user.id }}">{{ p.user.name }}</a></div>
+                  {% if p.score == 3 %}<span class="feed-match-badge perfect">Match</span>
+                  {% elif p.score == 2 %}<span class="feed-match-badge partial">Parcial</span>{% endif %}
+                </div>
+                <div class="feed-skills">
+                  <span class="feed-label green">Ensina</span>
+                  <div class="feed-tags">
+                    {% for s in p.teaches %}<span class="tag tag-green">{{ s.name }}</span>{% endfor %}
+                  </div>
+                </div>
+                <div class="feed-skills">
+                  <span class="feed-label orange">Quer</span>
+                  <div class="feed-tags">
+                    {% for s in p.learns %}<span class="tag tag-orange">{{ s.name }}</span>{% endfor %}
+                  </div>
+                </div>
+                <div class="feed-card-bottom">
+                  {% if p.offered_id and p.desired_id %}
+                    <form method="POST" action="/swaps/create">
+                      <input type="hidden" name="receiver_id" value="{{ p.user.id }}">
+                      <input type="hidden" name="offered_skill_id" value="{{ p.offered_id }}">
+                      <input type="hidden" name="desired_skill_id" value="{{ p.desired_id }}">
+                      <input type="hidden" name="redirect_to" value="/dashboard{% if active_category %}?category_id={{ active_category }}{% endif %}">
+                      <button type="submit" class="btn btn-green">Propor troca</button>
+                    </form>
+                  {% else %}
+                    <button type="button" class="btn btn-green" disabled>Sem match</button>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">Nenhuma pessoa encontrada.</div>
+          {% endif %}
+        </div>
       </div>
 
     </div>
   </div>
 
-  <script src="/static/js/validation.js"></script>
-  <script src="/static/js/auth.js"></script>
-  <script src="/static/js/dashboard.js"></script>
+  <div class="modal-overlay" id="confirm-modal" hidden>
+    <form method="POST" id="delete-form" action="/posts/0/delete">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+        <h2 id="confirm-modal-title">Excluir publicacao?</h2>
+        <p>Essa acao e <strong>irreversivel</strong>. A publicacao sera apagada permanentemente.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="confirm-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-red">Sim, excluir</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="/static/js/dashboard.js?v=3"></script>
 </body>
 </html>

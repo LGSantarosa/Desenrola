@@ -1,128 +1,80 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, Form, Request
+from fastapi.responses import RedirectResponse
 from pymysql.connections import Connection
 from app.core.database import get_db
-from app.core.auth import hash_password, decode_token
-from app.schemas.user import UserResponse, UserUpdate
+from app.core.auth import hash_password, clear_auth_cookie, get_current_user
+from app.core.validation import (
+    is_valid_name, is_valid_email, is_valid_cpf,
+    is_valid_phone, is_valid_birth_date, is_strong_password,
+)
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter()
 
 
-def get_current_user(authorization: str = Header(...), db: Connection = Depends(get_db)):
-    try:
-        token = authorization.replace("Bearer ", "")
-        payload = decode_token(token)
+@router.post("/users/me/update")
+def update_me(
+    request: Request,
+    name: str = Form(...),
+    email: str = Form(...),
+    cpf: str = Form(...),
+    phone: str = Form(...),
+    birth_date: str = Form(...),
+    password: str = Form(""),
+    db: Connection = Depends(get_db),
+):
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+
+    error = None
+    if not is_valid_name(name):
+        error = "Nome deve ter no minimo 5 letras"
+    elif not is_valid_email(email):
+        error = "E-mail invalido"
+    elif not is_valid_cpf(cpf):
+        error = "CPF invalido"
+    elif not is_valid_phone(phone):
+        error = "Celular invalido"
+    elif not is_valid_birth_date(birth_date):
+        error = "Data de nascimento invalida (idade minima 16 anos)"
+    elif password and not is_strong_password(password):
+        error = "Senha deve ter 8+ caracteres com maiuscula, minuscula, numero e caractere especial"
+
+    if not error:
         with db.cursor() as cur:
-            cur.execute("SELECT * FROM user WHERE id = %s", (payload["user_id"],))
-            user = cur.fetchone()
-        if not user:
-            raise HTTPException(401, "Usuario nao encontrado")
-        return user
-    except HTTPException:
-        raise
-    except Exception:
-        raise HTTPException(401, "Token invalido")
-
-
-@router.get("/me")
-def get_me(user: dict = Depends(get_current_user)):
-    return {
-        "id": user["id"],
-        "name": user["name"],
-        "email": user["email"],
-        "cpf": user["cpf"],
-        "phone": user["phone"],
-        "birth_date": str(user["birth_date"]),
-        "role": user["role"],
-        "avatar": user["avatar"],
-    }
-
-
-@router.put("/me")
-def update_me(data: UserUpdate, user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
-    updates = []
-    params = []
-
-    if data.name is not None:
-        updates.append("name = %s")
-        params.append(data.name)
-    if data.email is not None:
-        with db.cursor() as cur:
-            cur.execute("SELECT id FROM user WHERE email = %s AND id != %s", (data.email, user["id"]))
+            cur.execute("SELECT id FROM user WHERE email = %s AND id != %s", (email, user["id"]))
             if cur.fetchone():
-                raise HTTPException(400, "Email ja cadastrado")
-        updates.append("email = %s")
-        params.append(data.email)
-    if data.password is not None:
-        updates.append("password = %s")
-        params.append(hash_password(data.password))
-    if data.cpf is not None:
-        with db.cursor() as cur:
-            cur.execute("SELECT id FROM user WHERE cpf = %s AND id != %s", (data.cpf, user["id"]))
-            if cur.fetchone():
-                raise HTTPException(400, "CPF ja cadastrado")
-        updates.append("cpf = %s")
-        params.append(data.cpf)
-    if data.phone is not None:
-        updates.append("phone = %s")
-        params.append(data.phone)
-    if data.birth_date is not None:
-        updates.append("birth_date = %s")
-        params.append(data.birth_date)
+                error = "Email ja cadastrado"
+            else:
+                cur.execute("SELECT id FROM user WHERE cpf = %s AND id != %s", (cpf, user["id"]))
+                if cur.fetchone():
+                    error = "CPF ja cadastrado"
 
-    if not updates:
-        return user
+    if error:
+        return RedirectResponse(f"/profile?error={error}", status_code=303)
 
+    fields = ["name = %s", "email = %s", "cpf = %s", "phone = %s", "birth_date = %s"]
+    params = [name, email, cpf, phone, birth_date]
+    if password:
+        fields.append("password = %s")
+        params.append(hash_password(password))
     params.append(user["id"])
+
     with db.cursor() as cur:
-        cur.execute(f"UPDATE user SET {', '.join(updates)} WHERE id = %s", params)
+        cur.execute(f"UPDATE user SET {', '.join(fields)} WHERE id = %s", params)
         db.commit()
-        cur.execute("SELECT * FROM user WHERE id = %s", (user["id"],))
-        updated = cur.fetchone()
 
-    return {
-        "id": updated["id"],
-        "name": updated["name"],
-        "email": updated["email"],
-        "cpf": updated["cpf"],
-        "phone": updated["phone"],
-        "birth_date": str(updated["birth_date"]),
-        "role": updated["role"],
-        "avatar": updated["avatar"],
-    }
+    return RedirectResponse("/profile?ok=1", status_code=303)
 
 
-@router.get("/{user_id}")
-def get_user_profile(user_id: int, db: Connection = Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute("SELECT id, name, avatar, role FROM user WHERE id = %s", (user_id,))
-        user = cur.fetchone()
-        if not user:
-            raise HTTPException(404, "Usuario nao encontrado")
-
-        cur.execute(
-            """SELECT us.type, s.name FROM user_skill us
-               JOIN skill s ON s.id = us.skill_id
-               WHERE us.user_id = %s""",
-            (user_id,),
-        )
-        rows = cur.fetchall()
-
-    teaches = [r["name"] for r in rows if r["type"] == "teaches"]
-    learns = [r["name"] for r in rows if r["type"] == "learns"]
-
-    return {
-        "id": user["id"],
-        "name": user["name"],
-        "avatar": user["avatar"],
-        "role": user["role"],
-        "teaches": teaches,
-        "learns": learns,
-    }
-
-
-@router.delete("/me")
-def delete_me(user: dict = Depends(get_current_user), db: Connection = Depends(get_db)):
+@router.post("/users/me/delete")
+def delete_me(request: Request, db: Connection = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse("/login", status_code=303)
     with db.cursor() as cur:
         cur.execute("DELETE FROM user WHERE id = %s", (user["id"],))
         db.commit()
-    return {"message": "Conta deletada"}
+    response = RedirectResponse("/login", status_code=303)
+    clear_auth_cookie(response)
+    return response

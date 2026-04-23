@@ -1,5 +1,3 @@
-const API = 'http://localhost:8000';
-
 const REGEX = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   cpf: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
@@ -34,20 +32,27 @@ function validateField(input, validatorFn) {
   return valid;
 }
 
-function validateName(value) {
-  return value.trim().length >= 3;
-}
-
-function validateEmail(value) {
-  return REGEX.email.test(value);
-}
+function validateName(v) { return v.trim().length >= 5; }
+function validateEmail(v) { return REGEX.email.test(v); }
 
 function validateCPF(value) {
-  return REGEX.cpf.test(value);
+  if (!REGEX.cpf.test(value)) return false;
+  const digits = value.replace(/\D/g, '');
+  if (/^(\d)\1{10}$/.test(digits)) return false;
+  for (const length of [9, 10]) {
+    let total = 0;
+    for (let i = 0; i < length; i++) total += parseInt(digits[i], 10) * (length + 1 - i);
+    let check = (total * 10) % 11;
+    if (check === 10) check = 0;
+    if (check !== parseInt(digits[length], 10)) return false;
+  }
+  return true;
 }
 
 function validatePhone(value) {
-  return REGEX.phone.test(value);
+  if (!REGEX.phone.test(value)) return false;
+  const ddd = parseInt(value.slice(1, 3), 10);
+  return ddd >= 11 && ddd <= 99;
 }
 
 function validateBirthDate(value) {
@@ -62,16 +67,6 @@ function validateBirthDate(value) {
 }
 
 function validatePassword(value) {
-  return value.length >= 6;
-}
-
-function showAlert(id, message) {
-  const el = document.getElementById(id);
-  el.textContent = message;
-  el.style.display = 'block';
-}
-
-function hideAlert(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
+  if (!value || value.length < 8) return false;
+  return /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /[^A-Za-z0-9]/.test(value);
 }

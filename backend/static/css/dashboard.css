@@ -115,6 +115,31 @@
   margin-bottom: 12px;
 }
 
+.post-header-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-delete-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--gray);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.post-delete-btn:hover {
+  color: var(--red);
+  background: rgba(255, 77, 77, 0.08);
+  border-color: rgba(255, 77, 77, 0.3);
+}
+
 .post-avatar {
   width: 40px;
   height: 40px;

@@ -8,42 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css">
-  <link rel="stylesheet" href="/static/css/dashboard.css">
-  <link rel="stylesheet" href="/static/css/swaps.css">
+  <link rel="stylesheet" href="/static/css/app.css?v=3">
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=3">
+  <link rel="stylesheet" href="/static/css/swaps.css?v=3">
 </head>
 <body>
 
-  <nav>
-    <div class="nav-inner">
-      <div class="nav-left">
-        <a href="/dashboard" class="nav-logo">
-          <img src="/static/assets/images/camaleon.png" alt="desenrola!">
-        </a>
-        <input type="text" class="nav-search" id="nav-search" placeholder="Buscar pessoas...">
-      </div>
-      <div class="nav-tabs">
-        <a href="/dashboard" class="nav-tab" title="Feed">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </a>
-        <a href="/match" class="nav-tab" title="Match">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </a>
-        <a href="/swaps" class="nav-tab active" title="Trocas">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        </a>
-        <a href="/profile" class="nav-tab" title="Perfil">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </a>
-      </div>
-      <div class="nav-right">
-        <div class="nav-user" id="nav-user"></div>
-        <button class="nav-logout" id="logout-btn" title="Sair">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
-      </div>
-    </div>
-  </nav>
+  {% set active_tab = 'swaps' %}
+  {% include "_nav.html" with context %}
 
   <div class="dashboard">
     <div class="dashboard-container">
@@ -54,18 +26,75 @@
       </div>
 
       <div class="tabs">
-        <button class="tab active" data-tab="received">Recebidas</button>
-        <button class="tab" data-tab="sent">Enviadas</button>
+        <button type="button" class="tab active" data-tab="received">Recebidas</button>
+        <button type="button" class="tab" data-tab="sent">Enviadas</button>
       </div>
 
-      <div class="tab-content active" id="tab-received"></div>
-      <div class="tab-content" id="tab-sent"></div>
+      <div class="tab-content active" id="tab-received">
+        {% if received %}
+          {% for s in received %}
+            <div class="swap-card">
+              <div class="swap-header">
+                <span class="swap-name">{{ s.sender.name }}</span>
+                <span class="swap-status {{ s.status }}">
+                  {% if s.status == 'pending' %}Pendente
+                  {% elif s.status == 'accepted' %}Aceita
+                  {% else %}Recusada{% endif %}
+                </span>
+              </div>
+              <div class="swap-detail">Oferece: <strong style="color:var(--green)">{{ s.offered_skill }}</strong></div>
+              <div class="swap-detail">Quer: <strong style="color:var(--orange)">{{ s.desired_skill }}</strong></div>
+              {% if s.status == 'accepted' %}
+                <div class="swap-contact">
+                  <strong>Contato:</strong> {{ s.sender.email }} | {{ s.sender.phone }}
+                </div>
+              {% endif %}
+              {% if s.status == 'pending' %}
+                <div class="swap-actions">
+                  <form method="POST" action="/swaps/{{ s.id }}/accept" style="display:inline">
+                    <button type="submit" class="btn btn-green">Aceitar</button>
+                  </form>
+                  <form method="POST" action="/swaps/{{ s.id }}/reject" style="display:inline">
+                    <button type="submit" class="btn btn-red">Recusar</button>
+                  </form>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">Nenhuma solicitacao recebida ainda.</div>
+        {% endif %}
+      </div>
+
+      <div class="tab-content" id="tab-sent">
+        {% if sent %}
+          {% for s in sent %}
+            <div class="swap-card">
+              <div class="swap-header">
+                <span class="swap-name">{{ s.receiver.name }}</span>
+                <span class="swap-status {{ s.status }}">
+                  {% if s.status == 'pending' %}Pendente
+                  {% elif s.status == 'accepted' %}Aceita
+                  {% else %}Recusada{% endif %}
+                </span>
+              </div>
+              <div class="swap-detail">Oferece: <strong style="color:var(--green)">{{ s.offered_skill }}</strong></div>
+              <div class="swap-detail">Quer: <strong style="color:var(--orange)">{{ s.desired_skill }}</strong></div>
+              {% if s.status == 'accepted' %}
+                <div class="swap-contact">
+                  <strong>Contato:</strong> {{ s.receiver.email }} | {{ s.receiver.phone }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">Nenhuma solicitacao enviada ainda.</div>
+        {% endif %}
+      </div>
 
     </div>
   </div>
 
-  <script src="/static/js/validation.js"></script>
-  <script src="/static/js/auth.js"></script>
-  <script src="/static/js/swaps.js"></script>
+  <script src="/static/js/swaps.js?v=3"></script>
 </body>
 </html>
