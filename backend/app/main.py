@@ -193,7 +193,7 @@ def page_dashboard(request: Request, category_id: int = None, db: Connection = D
 
 
 @app.get("/onboarding")
-def page_onboarding(request: Request, db: Connection = Depends(get_db)):
+def page_onboarding(request: Request, ok: int = None, db: Connection = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
         return redirect_login()
@@ -201,12 +201,15 @@ def page_onboarding(request: Request, db: Connection = Depends(get_db)):
     teaches, learns = fetch_user_skills(db, user["id"])
     selected_teach_ids = [s["id"] for s in teaches]
     selected_learn_ids = [s["id"] for s in learns]
+    is_editing = bool(selected_teach_ids or selected_learn_ids)
     return templates.TemplateResponse("onboarding.html", {
         "request": request,
         "user": user,
         "categories": categories,
         "selected_teach_ids": selected_teach_ids,
         "selected_learn_ids": selected_learn_ids,
+        "is_editing": is_editing,
+        "ok": ok,
     })
 
 
@@ -215,11 +218,13 @@ def page_match(request: Request, db: Connection = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
         return redirect_login()
-    people = [p for p in discover_people(db, user["id"]) if p["score"] == 3]
+    people = discover_people(db, user["id"])
+    my_teaches, _ = fetch_user_skills(db, user["id"])
     return templates.TemplateResponse("match.html", {
         "request": request,
         "user": user,
         "people": people,
+        "my_teaches": my_teaches,
     })
 
 

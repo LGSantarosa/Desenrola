@@ -13,6 +13,10 @@
 </head>
 <body>
 
+  {% if is_editing %}
+    {% set active_tab = 'skills' %}
+    {% include "_nav.html" with context %}
+  {% else %}
   <nav>
     <div class="nav-inner">
       <div class="nav-left">
@@ -34,11 +38,15 @@
       </div>
     </div>
   </nav>
+  {% endif %}
 
   <div class="page-content">
     <div class="onboarding-card">
+      {% if ok %}
+      <div class="alert alert-success" style="display:block;margin-bottom:20px">Habilidades atualizadas</div>
+      {% endif %}
 
-      <div class="step" id="step-1">
+      <div class="step{% if is_editing %} hidden{% endif %}" id="step-1">
         <h1>Foto de perfil</h1>
         <p class="subtitle">Opcional, mas ajuda as pessoas a te reconhecerem.</p>
 
@@ -62,7 +70,8 @@
         </div>
       </div>
 
-      <form class="step hidden" id="step-2-form" method="POST" action="/skills/me/save">
+      <form class="step{% if not is_editing %} hidden{% endif %}" id="step-2-form" method="POST" action="/skills/me/save">
+        <input type="hidden" name="redirect_to" value="{% if is_editing %}/onboarding?ok=1{% else %}/dashboard{% endif %}">
         <div id="step-2">
           <h1>O que voce <span class="text-green">ensina</span>?</h1>
           <p class="subtitle">Selecione as habilidades que voce pode ensinar.</p>
@@ -115,7 +124,7 @@
           </div>
 
           <div class="step-actions">
-            <button type="submit" class="btn btn-green btn-full">Finalizar</button>
+            <button type="submit" class="btn btn-green btn-full">{% if is_editing %}Salvar habilidades{% else %}Finalizar{% endif %}</button>
           </div>
         </div>
       </form>

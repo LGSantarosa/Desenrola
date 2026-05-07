@@ -6,6 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const likeBtn = document.getElementById('like-btn');
   const swapForm = document.getElementById('match-swap-form');
 
+  const modal = document.getElementById('swap-modal');
+  const modalOffered = document.getElementById('swap-modal-offered');
+  const modalDesired = document.getElementById('swap-modal-desired');
+  const modalError = document.getElementById('swap-modal-error');
+  const modalCancel = document.getElementById('swap-modal-cancel');
+  const modalConfirm = document.getElementById('swap-modal-confirm');
+
+  const myTeachesEl = document.getElementById('my-teaches-data');
+  const myTeaches = myTeachesEl ? JSON.parse(myTeachesEl.textContent || '[]') : [];
+
   if (!stack) return;
 
   const cards = Array.from(stack.querySelectorAll('.match-card'));
@@ -46,6 +56,53 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentIndex < 0) showEmpty();
   }
 
+  function fillSelect(select, items, preselectedId) {
+    select.innerHTML = '';
+    items.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name;
+      if (preselectedId && String(s.id) === String(preselectedId)) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
+  function openModal(card) {
+    const theirTeaches = JSON.parse(card.dataset.theirTeaches || '[]');
+    const offeredPre = card.dataset.offered || '';
+    const desiredPre = card.dataset.desired || '';
+
+    fillSelect(modalOffered, myTeaches, offeredPre);
+    fillSelect(modalDesired, theirTeaches, desiredPre);
+
+    if (myTeaches.length === 0) {
+      modalError.style.display = 'block';
+      modalConfirm.disabled = true;
+    } else if (theirTeaches.length === 0) {
+      modalError.textContent = 'Esta pessoa nao cadastrou habilidades que ensina.';
+      modalError.style.display = 'block';
+      modalConfirm.disabled = true;
+    } else {
+      modalError.style.display = 'none';
+      modalError.textContent = 'Voce precisa cadastrar pelo menos uma skill que ensina.';
+      modalConfirm.disabled = false;
+    }
+
+    modal.dataset.userId = card.dataset.userId;
+    modal.hidden = false;
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+  }
+
+  function submitSwap(receiverId, offeredId, desiredId) {
+    swapForm.querySelector('#swap-receiver').value = receiverId;
+    swapForm.querySelector('#swap-offered').value = offeredId;
+    swapForm.querySelector('#swap-desired').value = desiredId;
+    swapForm.submit();
+  }
+
   function swipeCard(direction) {
     if (currentIndex < 0 || swiping) return;
     swiping = true;
@@ -54,10 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
     card.classList.add(direction === 'right' ? 'swipe-right' : 'swipe-left');
 
     if (direction === 'right') {
-      swapForm.querySelector('#swap-receiver').value = card.dataset.userId;
-      swapForm.querySelector('#swap-offered').value = card.dataset.offered;
-      swapForm.querySelector('#swap-desired').value = card.dataset.desired;
-      setTimeout(() => swapForm.submit(), 400);
+      const score = parseInt(card.dataset.score || '0', 10);
+      if (score === 3) {
+        setTimeout(() => submitSwap(card.dataset.userId, card.dataset.offered, card.dataset.desired), 400);
+        return;
+      }
+      setTimeout(() => {
+        card.classList.remove('swipe-right');
+        swiping = false;
+        openModal(card);
+      }, 250);
       return;
     }
 
@@ -73,6 +136,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (skipBtn) skipBtn.addEventListener('click', () => swipeCard('left'));
   if (likeBtn) likeBtn.addEventListener('click', () => swipeCard('right'));
+
+  if (modalCancel) modalCancel.addEventListener('click', () => {
+    closeModal();
+    const card = remaining[currentIndex];
+    if (card) {
+      card.style.transform = '';
+      const likeOverlay = card.querySelector('.match-card-overlay.like');
+      const nopeOverlay = card.querySelector('.match-card-overlay.nope');
+      if (likeOverlay) likeOverlay.style.opacity = 0;
+      if (nopeOverlay) nopeOverlay.style.opacity = 0;
+    }
+  });
+
+  if (modalConfirm) modalConfirm.addEventListener('click', () => {
+    if (modalConfirm.disabled) return;
+    submitSwap(modal.dataset.userId, modalOffered.value, modalDesired.value);
+  });
 
   remaining.forEach(card => setupDrag(card));
 

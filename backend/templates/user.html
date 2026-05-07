@@ -50,7 +50,11 @@
             {% endif %}
           </div>
         </div>
-        {% if not is_self %}
+        {% if is_self %}
+          <div class="user-actions">
+            <a href="/onboarding" class="btn btn-green btn-full">Editar habilidades</a>
+          </div>
+        {% else %}
           <div class="user-actions">
             {% if offered_id and desired_id %}
               <form method="POST" action="/swaps/create">

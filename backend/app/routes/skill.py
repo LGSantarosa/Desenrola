@@ -13,6 +13,7 @@ def save_skills(
     request: Request,
     teaches: List[int] = Form(default=[]),
     learns: List[int] = Form(default=[]),
+    redirect_to: str = Form("/dashboard"),
     db: Connection = Depends(get_db),
 ):
     user = get_current_user(request, db)
@@ -34,4 +35,5 @@ def save_skills(
             )
         db.commit()
 
-    return RedirectResponse("/dashboard", status_code=303)
+    target = redirect_to if redirect_to.startswith("/") else "/dashboard"
+    return RedirectResponse(target, status_code=303)

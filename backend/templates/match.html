@@ -25,9 +25,11 @@
           {% set ini = (fn[0] ~ (ln[0] if ln else '')) | upper %}
           <div class="match-card"
                data-user-id="{{ p.user.id }}"
-               data-offered="{{ p.offered_id }}"
-               data-desired="{{ p.desired_id }}">
-            <div class="match-card-overlay like">MATCH</div>
+               data-score="{{ p.score }}"
+               data-offered="{{ p.offered_id or '' }}"
+               data-desired="{{ p.desired_id or '' }}"
+               data-their-teaches='{{ p.teaches | tojson }}'>
+            <div class="match-card-overlay like">{% if p.score == 3 %}MATCH{% else %}TROCAR{% endif %}</div>
             <div class="match-card-overlay nope">NOPE</div>
             <div class="match-card-avatar">
               {% if p.user.avatar %}
@@ -35,17 +37,27 @@
               {% else %}{{ ini }}{% endif %}
             </div>
             <div class="match-card-name"><a href="/user/{{ p.user.id }}">{{ p.user.name }}</a></div>
-            <span class="match-card-badge perfect">Match perfeito</span>
+            {% if p.score == 3 %}
+              <span class="match-card-badge perfect">Match perfeito</span>
+            {% elif p.score == 2 %}
+              <span class="match-card-badge partial">Pode te ensinar</span>
+            {% elif p.score == 1 %}
+              <span class="match-card-badge partial">Quer aprender com voce</span>
+            {% else %}
+              <span class="match-card-badge none">Sem skill em comum</span>
+            {% endif %}
             <div class="match-card-section">
               <div class="match-card-label green">Ensina</div>
               <div class="match-card-tags">
                 {% for s in p.teaches %}<span class="tag tag-green">{{ s.name }}</span>{% endfor %}
+                {% if not p.teaches %}<span style="color:var(--gray);font-size:13px">Nenhuma</span>{% endif %}
               </div>
             </div>
             <div class="match-card-section">
               <div class="match-card-label orange">Quer aprender</div>
               <div class="match-card-tags">
                 {% for s in p.learns %}<span class="tag tag-orange">{{ s.name }}</span>{% endfor %}
+                {% if not p.learns %}<span style="color:var(--gray);font-size:13px">Nenhuma</span>{% endif %}
               </div>
             </div>
           </div>
@@ -80,6 +92,27 @@
     <input type="hidden" name="redirect_to" value="/match">
   </form>
 
-  <script src="/static/js/match.js?v=3"></script>
+  <div class="modal-overlay" id="swap-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="swap-modal-title">
+      <h2 id="swap-modal-title">Propor troca</h2>
+      <p style="color:var(--gray);font-size:14px;margin-bottom:16px">Escolha o que oferecer e o que quer aprender.</p>
+      <div class="form-group">
+        <label>Eu ensino</label>
+        <select id="swap-modal-offered" class="modal-select"></select>
+      </div>
+      <div class="form-group">
+        <label>Quero aprender</label>
+        <select id="swap-modal-desired" class="modal-select"></select>
+      </div>
+      <p id="swap-modal-error" class="error-msg" style="display:none">Voce precisa cadastrar pelo menos uma skill que ensina.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="swap-modal-cancel">Cancelar</button>
+        <button type="button" class="btn btn-green" id="swap-modal-confirm">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script id="my-teaches-data" type="application/json">{{ my_teaches | tojson }}</script>
+  <script src="/static/js/match.js?v=4"></script>
 </body>
 </html>

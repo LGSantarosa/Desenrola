@@ -159,6 +159,12 @@ nav {
   font-weight: 600;
   color: #e8efe9;
   cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.nav-user:hover {
+  opacity: 0.85;
 }
 
 .nav-user .avatar-small {
@@ -602,4 +608,35 @@ nav {
   .modal-actions .btn {
     width: 100%;
   }
+}
+
+.modal-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--dark-3, #1a1f1c);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #e8efe9;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.modal-select:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.modal .form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.modal .form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
