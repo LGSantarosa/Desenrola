@@ -198,9 +198,11 @@ def page_onboarding(request: Request, ok: int = None, db: Connection = Depends(g
     if not user:
         return redirect_login()
     categories = fetch_categories(db)
+    # acha o que o usuario ja tem cadastrado pra  os checkboxes
     teaches, learns = fetch_user_skills(db, user["id"])
     selected_teach_ids = [s["id"] for s in teaches]
     selected_learn_ids = [s["id"] for s in learns]
+    # se ja tem alguma skill ta editando
     is_editing = bool(selected_teach_ids or selected_learn_ids)
     return templates.TemplateResponse("onboarding.html", {
         "request": request,
