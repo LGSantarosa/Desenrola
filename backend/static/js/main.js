@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initNavScroll();
+  initMobileMenu();
 });
 
 function initScrollReveal() {
@@ -23,5 +24,19 @@ function initNavScroll() {
 
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+}
+
+function initMobileMenu() {
+  const toggle = document.getElementById('mobile-toggle');
+  const nav = document.querySelector('nav');
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener('click', () => {
+    nav.classList.toggle('menu-open');
+  });
+
+  nav.querySelectorAll('.nav-links a').forEach((a) => {
+    a.addEventListener('click', () => nav.classList.remove('menu-open'));
   });
 }

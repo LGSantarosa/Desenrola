@@ -4,6 +4,19 @@ const REGEX = {
   phone: /^\(\d{2}\) \d{5}-\d{4}$/,
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.password-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      if (!input) return;
+      const willShow = input.type === 'password';
+      input.type = willShow ? 'text' : 'password';
+      btn.classList.toggle('showing', willShow);
+      btn.setAttribute('aria-label', willShow ? 'Ocultar senha' : 'Mostrar senha');
+    });
+  });
+});
+
 function maskCPF(input) {
   input.addEventListener('input', () => {
     let v = input.value.replace(/\D/g, '');

@@ -575,6 +575,29 @@ footer {
     display: none;
   }
 
+  nav.menu-open {
+    background: rgba(10, 26, 18, 0.98);
+    backdrop-filter: blur(10px);
+  }
+
+  nav.menu-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px 24px 20px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(10, 26, 18, 0.98);
+    border-top: 1px solid var(--border);
+  }
+
+  nav.menu-open .nav-links a {
+    padding: 10px 0;
+  }
+
   .mobile-toggle {
     display: flex;
   }
