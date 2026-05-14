@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=3">
-  <link rel="stylesheet" href="/static/css/dashboard.css?v=3">
+  <link rel="stylesheet" href="/static/css/app.css?v=4">
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=4">
 </head>
 <body>
 
@@ -44,7 +44,7 @@
               {% set first = post.author_name.split(' ')[0] %}
               {% set last = post.author_name.split(' ')[-1] if post.author_name.split(' ')|length > 1 else '' %}
               {% set initials = (first[0] ~ (last[0] if last else '')) | upper %}
-              <div class="post-card">
+              <div class="post-card" id="post-{{ post.id }}">
                 <div class="post-header">
                   <div class="post-avatar">
                     {% if post.author_avatar %}
@@ -69,6 +69,53 @@
                 {% if post.image %}
                   <img class="post-image" src="/uploads/{{ post.image }}" alt="post">
                 {% endif %}
+
+                <div class="post-actions">
+                  <form method="POST" action="/posts/{{ post.id }}/like" class="like-form">
+                    <button type="submit" class="like-btn {% if post.liked %}liked{% endif %}" title="{% if post.liked %}Descurtir{% else %}Curtir{% endif %}">
+                      <svg viewBox="0 0 24 24" fill="{% if post.liked %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      <span>{{ post.like_count }}</span>
+                    </button>
+                  </form>
+                  <span class="comment-count">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>{{ post.comments|length }}</span>
+                  </span>
+                </div>
+
+                <div class="comments-section" data-post-id="{{ post.id }}">
+                  <div class="comments-list">
+                    {% for c in post.comments %}
+                      {% set cfn = c.author_name.split(' ')[0] %}
+                      {% set cln = c.author_name.split(' ')[-1] if c.author_name.split(' ')|length > 1 else '' %}
+                      {% set cini = (cfn[0] ~ (cln[0] if cln else '')) | upper %}
+                      <div class="comment-item" id="comment-{{ c.id }}">
+                        <div class="comment-avatar">
+                          {% if c.author_avatar %}
+                            <img src="/uploads/{{ c.author_avatar }}" alt="avatar">
+                          {% else %}{{ cini }}{% endif %}
+                        </div>
+                        <div class="comment-body">
+                          <div class="comment-header">
+                            <a href="/user/{{ c.author_id }}" class="comment-author">{{ c.author_name }}</a>
+                            {% if c.author_id == user.id %}
+                              <button type="button" class="comment-delete" data-comment-id="{{ c.id }}" title="Excluir comentario">x</button>
+                            {% endif %}
+                          </div>
+                          <div class="comment-content">{{ c.content }}</div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+
+                  <form method="POST" action="/comments/create" class="comment-form">
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="text" name="content" placeholder="Escreva um comentario..." maxlength="500" required>
+                    <button type="submit" title="Enviar">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                  </form>
+                </div>
               </div>
             {% endfor %}
           {% else %}
@@ -142,7 +189,7 @@
     <form method="POST" id="delete-form" action="/posts/0/delete">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
         <h2 id="confirm-modal-title">Excluir publicacao?</h2>
-        <p>Essa acao e <strong>irreversivel</strong>. A publicacao sera apagada permanentemente.</p>
+        <p id="confirm-modal-desc">Essa acao e <strong>irreversivel</strong>. A publicacao sera apagada permanentemente.</p>
         <div class="modal-actions">
           <button type="button" class="btn btn-outline" id="confirm-cancel">Cancelar</button>
           <button type="submit" class="btn btn-red">Sim, excluir</button>
@@ -151,8 +198,10 @@
     </form>
   </div>
 
+  <script id="current-user-data" type="application/json">{{ {"id": user.id, "name": user.name, "avatar": user.avatar} | tojson }}</script>
+
   <script src="/static/js/theme.js?v=1"></script>
-  <script src="/static/js/dashboard.js?v=3"></script>
+  <script src="/static/js/dashboard.js?v=9"></script>
 </body>
 </html>
 

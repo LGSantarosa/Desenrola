@@ -1,7 +1,3 @@
-// alterna entre dark e light. estado em localStorage.theme
-// o atributo data-theme em <html> e setado ANTES desse script (inline no head)
-// pra evitar o "flash" de tema errado no carregamento
-
 function applyTheme(theme) {
   if (theme === 'light') {
     document.documentElement.setAttribute('data-theme', 'light');

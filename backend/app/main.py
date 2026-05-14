@@ -198,6 +198,23 @@ def page_dashboard(request: Request, category_id: int = None, db: Connection = D
         )
         posts = cur.fetchall()
 
+        for p in posts:
+            cur.execute("SELECT COUNT(*) AS c FROM post_like WHERE post_id = %s", (p["id"],))
+            p["like_count"] = cur.fetchone()["c"]
+            cur.execute(
+                "SELECT 1 FROM post_like WHERE post_id = %s AND user_id = %s",
+                (p["id"], user["id"]),
+            )
+            p["liked"] = bool(cur.fetchone())
+            cur.execute(
+                """SELECT c.id, c.content, c.created_at,
+                          u.id AS author_id, u.name AS author_name, u.avatar AS author_avatar
+                   FROM comment c JOIN user u ON u.id = c.user_id
+                   WHERE c.post_id = %s ORDER BY c.created_at ASC""",
+                (p["id"],),
+            )
+            p["comments"] = cur.fetchall()
+
     categories = fetch_categories(db)
     people = discover_people(db, user["id"], category_id)
 

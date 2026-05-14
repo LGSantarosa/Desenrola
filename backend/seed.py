@@ -31,6 +31,8 @@ bootstrap_conn.close()
 ddl_conn = get_connection()
 ddl_cur = ddl_conn.cursor()
 
+ddl_cur.execute("DROP TABLE IF EXISTS comment")
+ddl_cur.execute("DROP TABLE IF EXISTS post_like")
 ddl_cur.execute("DROP TABLE IF EXISTS post")
 ddl_cur.execute("DROP TABLE IF EXISTS swap_request")
 ddl_cur.execute("DROP TABLE IF EXISTS user_skill")
@@ -103,6 +105,30 @@ CREATE TABLE post (
     content TEXT NOT NULL,
     image VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE post_like (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_like (post_id, user_id),
+    FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+) ENGINE=InnoDB
+""")
+
+ddl_cur.execute("""
+CREATE TABLE comment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 ) ENGINE=InnoDB
 """)
@@ -245,10 +271,12 @@ if cur.fetchone()["c"] > 0:
     conn.commit()
 
 print("Baixando imagens dos posts...")
+post_ids = []
 for p in posts_data:
     cur.execute("SELECT id FROM user WHERE email = %s", (p["email"],))
     user = cur.fetchone()
     if not user:
+        post_ids.append(None)
         continue
 
     image_name = None
@@ -259,11 +287,53 @@ for p in posts_data:
         "INSERT INTO post (user_id, content, image) VALUES (%s, %s, %s)",
         (user["id"], p["content"], image_name),
     )
+    post_ids.append(cur.lastrowid)
+
+conn.commit()
+
+comments_data = [
+    {"post_idx": 0, "email": "rafael@email.com", "content": "Cara, ja passei por isso. A dica e ir migrando componente por componente, nao tenta refatorar tudo de uma vez"},
+    {"post_idx": 0, "email": "ana@email.com", "content": "Se quiser dar uma olhada no React Query, ajudou demais aqui"},
+    {"post_idx": 0, "email": "gabriel@email.com", "content": "Posta no LinkedIn que eu compartilho, conheco gente que ta passando pela mesma migracao"},
+    {"post_idx": 1, "email": "julia@email.com", "content": "Ficou lindo! Posta a receita por favor"},
+    {"post_idx": 1, "email": "camila@email.com", "content": "Tambem comecei outro dia, e relaxante mesmo. Voce usou pasta americana ou chantilly?"},
+    {"post_idx": 2, "email": "mariana@email.com", "content": "Verdade, vi muita gente travar em framework antes de saber estrutura de dados basica"},
+    {"post_idx": 2, "email": "bruno@email.com", "content": "Dica de ouro. Adiciona compreensao de listas tambem, salva a vida"},
+    {"post_idx": 3, "email": "fernanda@email.com", "content": "Bora! Tenho um nivel parecido, podemos marcar uma call por semana"},
+    {"post_idx": 3, "email": "lucas@email.com", "content": "Eu to com nivel basico ainda mas topo entrar pra evoluir"},
+    {"post_idx": 4, "email": "ana@email.com", "content": "Sempre quis montar um. Manda as dicas! Qual softbox voce recomenda?"},
+    {"post_idx": 5, "email": "rafael@email.com", "content": "Parabens! A primeira vez em publico e a mais dificil, agora fica mais leve"},
+    {"post_idx": 5, "email": "pedro@email.com", "content": "Que demais! Toca o que normalmente?"},
+    {"post_idx": 6, "email": "mariana@email.com", "content": "Figma mudou o jogo mesmo. Auto layout salvou minha vida"},
+    {"post_idx": 6, "email": "camila@email.com", "content": "Concordo, mas pra edicao de imagem ainda volto pro Photoshop"},
+    {"post_idx": 7, "email": "gabriel@email.com", "content": "Qual ferramenta voce usou pra pesquisa de palavra-chave? Tenho usado o Ubersuggest"},
+    {"post_idx": 8, "email": "julia@email.com", "content": "Comecei essa jornada tambem! Hiragana foi mais facil do que pensei"},
+    {"post_idx": 8, "email": "fernanda@email.com", "content": "Recomendo o app Anki pra fixar os kanjis depois"},
+    {"post_idx": 9, "email": "lucas@email.com", "content": "Excelente conselho. Day trade pra iniciante e armadilha"},
+    {"post_idx": 9, "email": "ana@email.com", "content": "Tesouro IPCA+ tem sido meu queridinho ultimamente"},
+    {"post_idx": 10, "email": "rafael@email.com", "content": "Eu topo! Trabalho com Node ha 3 anos, posso ajudar com duvidas"},
+    {"post_idx": 11, "email": "pedro@email.com", "content": "Demais, sempre quis aprender. Tem indicacao de curso?"},
+    {"post_idx": 12, "email": "bruno@email.com", "content": "Farofa e questao de pratica kkkkk. Manda como temperou a picanha"},
+    {"post_idx": 13, "email": "gabriel@email.com", "content": "Design thinking abre a cabeca mesmo. Recomenda algum livro?"},
+    {"post_idx": 14, "email": "ana@email.com", "content": "Tambem amo o Lightroom mobile, uso ate em fotos de produto"},
+]
+
+for c in comments_data:
+    if c["post_idx"] >= len(post_ids) or post_ids[c["post_idx"]] is None:
+        continue
+    cur.execute("SELECT id FROM user WHERE email = %s", (c["email"],))
+    u = cur.fetchone()
+    if not u:
+        continue
+    cur.execute(
+        "INSERT INTO comment (post_id, user_id, content) VALUES (%s, %s, %s)",
+        (post_ids[c["post_idx"]], u["id"], c["content"]),
+    )
 
 conn.commit()
 cur.close()
 conn.close()
-print("Seed concluido! 10 usuarios com avatar e 15 posts com imagens.")
+print("Seed concluido! 10 usuarios com avatar, 15 posts com imagens e " + str(len(comments_data)) + " comentarios.")
 
 # Banco de dados — cria todas as tabelas e popula com dados de exemplo
 
