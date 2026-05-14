@@ -5,10 +5,27 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pymysql.connections import Connection
 from app.core.database import get_db
-from app.core.auth import get_current_user
+from app.core.auth import (
+    get_current_user, COOKIE_NAME, decode_token, create_token, set_auth_cookie,
+)
 from app.routes import auth, user, skill, swap, upload, post
 
 app = FastAPI(title="desenrola!")
+
+
+@app.middleware("http")
+async def refresh_session(request: Request, call_next):
+    response = await call_next(request)
+    token = request.cookies.get(COOKIE_NAME)
+    if token:
+        try:
+            payload = decode_token(token)
+            new_token = create_token(payload["user_id"], payload["role"])
+            set_auth_cookie(response, new_token)
+        except Exception:
+            pass
+    return response
+
 
 app.include_router(auth.router)
 app.include_router(user.router)

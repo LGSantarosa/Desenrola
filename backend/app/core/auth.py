@@ -10,7 +10,7 @@ load_dotenv()
 
 SECRET = os.getenv("JWT_SECRET")
 COOKIE_NAME = "session"
-COOKIE_MAX_AGE = 60 * 60 * 24 * 7 #tempo maximo do cookie de autent
+COOKIE_MAX_AGE = 30 * 60 #tempo maximo do cookie de autent (30 min, renovado a cada request)
 
 
 def hash_password(password):
