@@ -4,12 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const emptyEl = document.getElementById('match-empty');
   const skipBtn = document.getElementById('skip-btn');
   const likeBtn = document.getElementById('like-btn');
-  const swapForm = document.getElementById('match-swap-form');
 
   const modal = document.getElementById('swap-modal');
+  const modalContent = document.getElementById('swap-modal-content');
+  const modalEmpty = document.getElementById('swap-modal-empty');
+  const modalEmptyText = document.getElementById('swap-modal-empty-text');
+  const modalEmptyLink = document.getElementById('swap-modal-empty-link');
   const modalOffered = document.getElementById('swap-modal-offered');
   const modalDesired = document.getElementById('swap-modal-desired');
-  const modalError = document.getElementById('swap-modal-error');
   const modalCancel = document.getElementById('swap-modal-cancel');
   const modalConfirm = document.getElementById('swap-modal-confirm');
 
@@ -67,40 +69,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function showEmptyModal(message, showOnboardingLink) {
+    modalContent.hidden = true;
+    modalEmpty.hidden = false;
+    modalEmptyText.textContent = message;
+    modalEmptyLink.style.display = showOnboardingLink ? '' : 'none';
+    modalConfirm.style.display = 'none';
+    modalCancel.textContent = 'Fechar';
+  }
+
+  function showFormModal() {
+    modalContent.hidden = false;
+    modalEmpty.hidden = true;
+    modalConfirm.style.display = '';
+    modalCancel.textContent = 'Cancelar';
+  }
+
   function openModal(card) {
     const theirTeaches = JSON.parse(card.dataset.theirTeaches || '[]');
     const offeredPre = card.dataset.offered || '';
     const desiredPre = card.dataset.desired || '';
 
-    fillSelect(modalOffered, myTeaches, offeredPre);
-    fillSelect(modalDesired, theirTeaches, desiredPre);
-
-    if (myTeaches.length === 0) {
-      modalError.style.display = 'block';
-      modalConfirm.disabled = true;
-    } else if (theirTeaches.length === 0) {
-      modalError.textContent = 'Esta pessoa nao cadastrou habilidades que ensina.';
-      modalError.style.display = 'block';
-      modalConfirm.disabled = true;
-    } else {
-      modalError.style.display = 'none';
-      modalError.textContent = 'Voce precisa cadastrar pelo menos uma skill que ensina.';
-      modalConfirm.disabled = false;
-    }
-
     modal.dataset.userId = card.dataset.userId;
     modal.hidden = false;
+
+    if (myTeaches.length === 0) {
+      showEmptyModal('Voce ainda nao cadastrou nenhuma habilidade que ensina. Cadastre antes de propor uma troca.', true);
+      return;
+    }
+    if (theirTeaches.length === 0) {
+      showEmptyModal('Esta pessoa ainda nao cadastrou habilidades que ensina. Tente outra.', false);
+      return;
+    }
+
+    showFormModal();
+    fillSelect(modalOffered, myTeaches, offeredPre);
+    fillSelect(modalDesired, theirTeaches, desiredPre);
+    modalConfirm.disabled = false;
   }
 
   function closeModal() {
     modal.hidden = true;
   }
 
-  function submitSwap(receiverId, offeredId, desiredId) {
-    swapForm.querySelector('#swap-receiver').value = receiverId;
-    swapForm.querySelector('#swap-offered').value = offeredId;
-    swapForm.querySelector('#swap-desired').value = desiredId;
-    swapForm.submit();
+  async function submitSwap(receiverId, offeredId, desiredId) {
+    const fd = new FormData();
+    fd.append('receiver_id', receiverId);
+    fd.append('offered_skill_id', offeredId);
+    fd.append('desired_skill_id', desiredId);
+    fd.append('redirect_to', '/match');
+    try {
+      await fetch('/swaps/create', { method: 'POST', body: fd, redirect: 'manual' });
+    } catch (err) {}
+  }
+
+  function advance() {
+    currentIndex--;
+    swiping = false;
+    refreshStack();
   }
 
   function swipeCard(direction) {
@@ -113,7 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (direction === 'right') {
       const score = parseInt(card.dataset.score || '0', 10);
       if (score === 3) {
-        setTimeout(() => submitSwap(card.dataset.userId, card.dataset.offered, card.dataset.desired), 400);
+        setTimeout(async () => {
+          await submitSwap(card.dataset.userId, card.dataset.offered, card.dataset.desired);
+          advance();
+        }, 400);
         return;
       }
       setTimeout(() => {
@@ -127,11 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     skipped.push(card.dataset.userId);
     sessionStorage.setItem('match-skipped', JSON.stringify(skipped));
 
-    setTimeout(() => {
-      currentIndex--;
-      swiping = false;
-      refreshStack();
-    }, 400);
+    setTimeout(() => advance(), 400);
   }
 
   if (skipBtn) skipBtn.addEventListener('click', () => swipeCard('left'));
@@ -149,9 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (modalConfirm) modalConfirm.addEventListener('click', () => {
-    if (modalConfirm.disabled) return;
-    submitSwap(modal.dataset.userId, modalOffered.value, modalDesired.value);
+  if (modalConfirm) modalConfirm.addEventListener('click', async () => {
+    if (modalConfirm.disabled || swiping) return;
+    swiping = true;
+    const card = remaining[currentIndex];
+    closeModal();
+    await submitSwap(modal.dataset.userId, modalOffered.value, modalDesired.value);
+    if (card) card.classList.add('swipe-right');
+    setTimeout(() => advance(), 400);
   });
 
   remaining.forEach(card => setupDrag(card));

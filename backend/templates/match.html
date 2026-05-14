@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/app.css?v=3">
-  <link rel="stylesheet" href="/static/css/match.css?v=3">
+  <link rel="stylesheet" href="/static/css/app.css?v=4">
+  <link rel="stylesheet" href="/static/css/match.css?v=5">
 </head>
 <body>
 
@@ -86,26 +86,30 @@
     </div>
   </div>
 
-  <form id="match-swap-form" method="POST" action="/swaps/create" style="display:none">
-    <input type="hidden" name="receiver_id" id="swap-receiver">
-    <input type="hidden" name="offered_skill_id" id="swap-offered">
-    <input type="hidden" name="desired_skill_id" id="swap-desired">
-    <input type="hidden" name="redirect_to" value="/match">
-  </form>
-
   <div class="modal-overlay" id="swap-modal" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="swap-modal-title">
       <h2 id="swap-modal-title">Propor troca</h2>
-      <p style="color:var(--gray);font-size:14px;margin-bottom:16px">Escolha o que oferecer e o que quer aprender.</p>
-      <div class="form-group">
-        <label>Eu ensino</label>
-        <select id="swap-modal-offered" class="modal-select"></select>
+
+      <div id="swap-modal-content">
+        <p style="color:var(--gray);font-size:14px;margin-bottom:16px">Escolha o que oferecer e o que quer aprender.</p>
+        <div class="form-group">
+          <label>Eu ensino</label>
+          <select id="swap-modal-offered" class="modal-select"></select>
+        </div>
+        <div class="form-group">
+          <label>Quero aprender</label>
+          <select id="swap-modal-desired" class="modal-select"></select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Quero aprender</label>
-        <select id="swap-modal-desired" class="modal-select"></select>
+
+      <div id="swap-modal-empty" class="swap-modal-empty" hidden>
+        <div class="swap-modal-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <p id="swap-modal-empty-text"></p>
+        <a id="swap-modal-empty-link" href="/onboarding" class="btn btn-outline">Cadastrar habilidades</a>
       </div>
-      <p id="swap-modal-error" class="error-msg" style="display:none">Voce precisa cadastrar pelo menos uma skill que ensina.</p>
+
       <div class="modal-actions">
         <button type="button" class="btn btn-outline" id="swap-modal-cancel">Cancelar</button>
         <button type="button" class="btn btn-green" id="swap-modal-confirm">Enviar</button>
@@ -115,7 +119,7 @@
 
   <script id="my-teaches-data" type="application/json">{{ my_teaches | tojson }}</script>
   <script src="/static/js/theme.js?v=1"></script>
-  <script src="/static/js/match.js?v=4"></script>
+  <script src="/static/js/match.js?v=5"></script>
 </body>
 </html>
 

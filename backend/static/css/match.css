@@ -237,6 +237,28 @@
   margin-bottom: 24px;
 }
 
+.swap-modal-empty {
+  text-align: center;
+  padding: 8px 0 16px;
+}
+
+.swap-modal-empty-icon {
+  color: var(--orange);
+  margin-bottom: 12px;
+}
+
+.swap-modal-empty-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.swap-modal-empty p {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
 @media (max-width: 480px) {
   .match-stack {
     min-height: 420px;
