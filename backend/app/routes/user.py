@@ -78,3 +78,6 @@ def delete_me(request: Request, db: Connection = Depends(get_db)):
     response = RedirectResponse("/login", status_code=303)
     clear_auth_cookie(response)
     return response
+
+# Rotas — usuario (atualizar perfil, deletar conta)
+

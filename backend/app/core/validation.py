@@ -59,3 +59,6 @@ def is_valid_birth_date(value):
         return False
     age = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
     return age >= 16
+
+# Validacao — regras de formularios (nome, email, CPF, telefone, data, senha)
+

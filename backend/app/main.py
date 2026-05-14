@@ -320,3 +320,6 @@ def page_user(user_id: int, request: Request, db: Connection = Depends(get_db)):
         "desired_id": desired_id,
         "is_self": other["id"] == me["id"],
     })
+
+# Rotas — paginas (GET) que renderizam HTML via Jinja2
+

@@ -39,3 +39,6 @@ def save_skills(
 
     target = redirect_to if redirect_to.startswith("/") else "/dashboard"
     return RedirectResponse(target, status_code=303)
+
+# Rotas — skills do usuario (ensina / aprende)
+

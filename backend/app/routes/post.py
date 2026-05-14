@@ -61,3 +61,6 @@ def delete_post(post_id: int, request: Request, db: Connection = Depends(get_db)
             db.commit()
 
     return RedirectResponse("/dashboard", status_code=303)
+
+# Rotas — publicacoes do feed (criar, deletar)
+

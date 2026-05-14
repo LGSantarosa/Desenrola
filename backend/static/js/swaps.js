@@ -9,3 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// Front (JS) — swaps: alternancia entre as abas Recebidas e Enviadas
+

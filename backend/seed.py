@@ -264,3 +264,6 @@ conn.commit()
 cur.close()
 conn.close()
 print("Seed concluido! 10 usuarios com avatar e 15 posts com imagens.")
+
+# Banco de dados — cria todas as tabelas e popula com dados de exemplo
+

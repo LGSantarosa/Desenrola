@@ -72,3 +72,6 @@ def _update_status(swap_id, status, request, db):
             db.commit()
 
     return RedirectResponse("/swaps", status_code=303)
+
+# Rotas — trocas de habilidades (criar, aceitar, rejeitar)
+

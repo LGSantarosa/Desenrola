@@ -40,3 +40,6 @@ async def upload_avatar(
         db.commit()
 
     return RedirectResponse(redirect_to, status_code=303)
+
+# Rotas — upload de avatar
+

@@ -51,3 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
   });
 });
+
+// Front (JS) — feed: preview de imagem ao postar e modal de confirmacao de exclusao
+

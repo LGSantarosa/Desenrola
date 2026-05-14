@@ -32,3 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Front (JS) — tela de cadastro (mascaras + validacoes do form)
+

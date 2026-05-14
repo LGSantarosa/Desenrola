@@ -40,3 +40,6 @@ function initMobileMenu() {
     a.addEventListener('click', () => nav.classList.remove('menu-open'));
   });
 }
+
+// Front (JS) — landing: scroll reveal, navbar e menu mobile
+

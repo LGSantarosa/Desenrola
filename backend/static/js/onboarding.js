@@ -56,3 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     step3.classList.remove('hidden');
   });
 });
+
+// Front (JS) — onboarding: upload de avatar, accordion de categorias, selecao multipla, navegacao entre steps
+

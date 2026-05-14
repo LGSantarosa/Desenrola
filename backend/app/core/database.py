@@ -26,3 +26,6 @@ def get_db():
         yield conn
     finally:
         conn.close()
+
+# Banco de dados — conexao MySQL e dependencia injetada nas rotas
+

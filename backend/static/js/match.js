@@ -204,3 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refreshStack();
 });
+
+// Front (JS) — match: swipe estilo Tinder, modal de selecao de skills e envio de troca
+

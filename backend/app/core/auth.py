@@ -60,3 +60,6 @@ def get_current_user(request: Request, db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("SELECT * FROM user WHERE id = %s", (payload["user_id"],))
         return cur.fetchone()
+
+# Autenticacao — JWT, bcrypt e cookie de sessao
+

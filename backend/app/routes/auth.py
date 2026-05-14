@@ -107,3 +107,6 @@ def logout():
     response = RedirectResponse("/login", status_code=303)
     clear_auth_cookie(response)
     return response
+
+# Rotas — autenticacao (registro, login, logout)
+

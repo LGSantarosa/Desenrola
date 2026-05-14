@@ -50,3 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && !modal.hidden) closeModal();
   });
 });
+
+// Front (JS) — perfil: validacoes do form de update e modal de confirmacao de exclusao da conta
+
