@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
   <title>Match — desenrola!</title>
   <link rel="icon" type="image/png" href="/static/assets/images/camaleon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,6 +114,7 @@
   </div>
 
   <script id="my-teaches-data" type="application/json">{{ my_teaches | tojson }}</script>
+  <script src="/static/js/theme.js?v=1"></script>
   <script src="/static/js/match.js?v=4"></script>
 </body>
 </html>

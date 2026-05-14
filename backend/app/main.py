@@ -16,6 +16,8 @@ app = FastAPI(title="desenrola!")
 @app.middleware("http")
 async def refresh_session(request: Request, call_next):
     response = await call_next(request)
+    if request.url.path == "/auth/logout":
+        return response
     token = request.cookies.get(COOKIE_NAME)
     if token:
         try:

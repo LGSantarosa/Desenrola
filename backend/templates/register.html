@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
   <title>Criar conta — desenrola!</title>
   <link rel="icon" type="image/png" href="/static/assets/images/camaleon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +12,11 @@
   <link rel="stylesheet" href="/static/css/app.css?v=3">
 </head>
 <body>
+
+  <button type="button" class="theme-toggle theme-toggle-floating" title="Alternar tema" aria-label="Alternar tema">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+  </button>
 
   <nav>
     <div class="container nav-inner">
@@ -89,6 +95,7 @@
     </div>
   </div>
 
+  <script src="/static/js/theme.js?v=1"></script>
   <script src="/static/js/validation.js?v=3"></script>
   <script src="/static/js/register.js?v=3"></script>
 </body>

@@ -59,7 +59,7 @@
 }
 
 .btn-skip:hover {
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .categories-list {
@@ -81,7 +81,7 @@
 .category-header {
   padding: 12px 16px;
   background: var(--dark-3);
-  color: #e8efe9;
+  color: var(--text);
   font-family: 'Sora', sans-serif;
   font-weight: 700;
   font-size: 13px;
@@ -123,7 +123,7 @@
   font-size: 13px;
   font-weight: 500;
   background: var(--dark);
-  color: #e8efe9;
+  color: var(--text);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.15s;

@@ -37,7 +37,7 @@
 }
 
 .tab:hover {
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .tab.active {

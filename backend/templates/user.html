@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
   <title>{% if other %}{{ other.name }}{% else %}Usuario{% endif %} — desenrola!</title>
   <link rel="icon" type="image/png" href="/static/assets/images/camaleon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,6 +75,7 @@
     </div>
   </div>
 
+  <script src="/static/js/theme.js?v=1"></script>
 </body>
 </html>
 

@@ -33,7 +33,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 14px;
-  color: #fff;
+  color: var(--text-strong);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   outline: none;
@@ -43,7 +43,7 @@
 }
 
 .new-post-form textarea::placeholder {
-  color: #3d5244;
+  color: var(--placeholder);
 }
 
 .new-post-form textarea:focus {
@@ -70,7 +70,7 @@
 
 .image-upload-btn:hover {
   border-color: var(--green);
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .image-preview {
@@ -91,7 +91,7 @@
   top: 8px;
   right: 8px;
   background: rgba(0, 0, 0, 0.7);
-  color: #fff;
+  color: var(--text-strong);
   border: none;
   border-radius: 50%;
   width: 24px;
@@ -217,7 +217,7 @@
 
 .filter-btn:hover {
   border-color: var(--green);
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .filter-btn.active {
